@@ -41,6 +41,25 @@ func (dec *Decoder) UseNumber() { dec.d.useNumber = true }
 // non-ignored, exported fields in the destination.
 func (dec *Decoder) DisallowUnknownFields() { dec.d.disallowUnknownFields = true }
 
+// SetDiscriminator tells the decoder toe check if JSON objects include a
+// discriminator that specifies the Go type into which the object should be
+// decoded.
+// Struct values are encoded with a field (typeFieldName) that specifies the
+// struct's Go type.
+// Primitive values are encoded as a struct a field (typeFieldName) that
+// specifies the primitive value's Go type and a field (valueFieldName) that
+// specifies the actual value.
+// Struct and primitive values are also both encoded with a field
+// (byAddrFieldName) that specifies whether the Go type is a pointer to another
+// Go type.
+// Calling SetDiscriminator("", "", "", nil) disables the use of a discriminator.
+func (dec *Decoder) SetDiscriminator(typeFieldName, valueFieldName, byAddrFieldName string, fn DiscriminatorToTypeFunc) {
+	dec.d.discriminatorTypeFieldName = typeFieldName
+	dec.d.discriminatorValueFieldName = valueFieldName
+	dec.d.discriminatorByAddrFieldName = byAddrFieldName
+	dec.d.discriminatorToTypeFn = fn
+}
+
 // Decode reads the next JSON-encoded value from its
 // input and stores it in the value pointed to by v.
 //
@@ -186,6 +205,10 @@ type Encoder struct {
 	indentBuf    *bytes.Buffer
 	indentPrefix string
 	indentValue  string
+
+	discriminatorTypeFieldName   string
+	discriminatorValueFieldName  string
+	discriminatorByAddrFieldName string
 }
 
 // NewEncoder returns a new encoder that writes to w.
@@ -203,7 +226,12 @@ func (enc *Encoder) Encode(v interface{}) error {
 		return enc.err
 	}
 	e := newEncodeState()
-	err := e.marshal(v, encOpts{escapeHTML: enc.escapeHTML})
+	err := e.marshal(v, encOpts{
+		escapeHTML:                   enc.escapeHTML,
+		discriminatorTypeFieldName:   enc.discriminatorTypeFieldName,
+		discriminatorValueFieldName:  enc.discriminatorValueFieldName,
+		discriminatorByAddrFieldName: enc.discriminatorByAddrFieldName,
+	})
 	if err != nil {
 		return err
 	}
@@ -252,6 +280,23 @@ func (enc *Encoder) SetIndent(prefix, indent string) {
 // of the output, SetEscapeHTML(false) disables this behavior.
 func (enc *Encoder) SetEscapeHTML(on bool) {
 	enc.escapeHTML = on
+}
+
+// SetDiscriminator specifies that values stored in interfaces should be
+// encoded with information about the stored value's Go type.
+// Struct values are encoded with a field (typeFieldName) that specifies the
+// struct's Go type.
+// Primitive values are encoded as a struct a field (typeFieldName) that
+// specifies the primitive value's Go type and a field (valueFieldName) that
+// specifies the actual value.
+// Struct and primitive values are also both encoded with a field
+// (byAddrFieldName) that specifies whether the Go type is a pointer to another
+// Go type.
+// Calling SetDiscriminator("", "", "") disables the use of a discriminator.
+func (enc *Encoder) SetDiscriminator(typeFieldName, valueFieldName, byAddrFieldName string) {
+	enc.discriminatorTypeFieldName = typeFieldName
+	enc.discriminatorValueFieldName = valueFieldName
+	enc.discriminatorByAddrFieldName = byAddrFieldName
 }
 
 // RawMessage is a raw encoded JSON value.
