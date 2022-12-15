@@ -98,12 +98,12 @@ func (cmd *info) Run(ctx context.Context, f *flag.FlagSet) error {
 }
 
 type Cluster struct {
-	Path string
-	Info *types.VsanConfigInfoEx
+	Path string                  `json:"path"`
+	Info *types.VsanConfigInfoEx `json:"info"`
 }
 
 type infoResult struct {
-	Clusters []Cluster
+	Clusters []Cluster `json:"clusters"`
 }
 
 func (r *infoResult) Write(w io.Writer) error {

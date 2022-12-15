@@ -159,7 +159,7 @@ func (cmd *ps) Run(ctx context.Context, f *flag.FlagSet) error {
 
 type psResult struct {
 	cmd         *ps
-	ProcessInfo []types.GuestProcessInfo
+	ProcessInfo []types.GuestProcessInfo `json:"processInfo"`
 }
 
 func (r *psResult) Write(w io.Writer) error {

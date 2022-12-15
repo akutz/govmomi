@@ -44,7 +44,7 @@ func (s *spec) Register(ctx context.Context, f *flag.FlagSet) {
 type create struct {
 	*flags.DatastoreFlag
 
-	Bytes units.ByteSize
+	Bytes units.ByteSize `json:"bytes"`
 	spec
 }
 

@@ -88,7 +88,7 @@ Examples:
 }
 
 type lsWriter struct {
-	Volume []types.CnsVolume
+	Volume []types.CnsVolume `json:"volume"`
 	cmd    *ls
 }
 

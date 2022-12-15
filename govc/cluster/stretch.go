@@ -34,12 +34,12 @@ import (
 type stretch struct {
 	*flags.DatacenterFlag
 
-	WitnessHost            string
-	FirstFaultDomainHosts  string
-	SecondFaultDomainHosts string
-	FirstFaultDomainName   string
-	SecondFaultDomainName  string
-	PreferredFaultDomain   string
+	WitnessHost            string `json:"witnessHost"`
+	FirstFaultDomainHosts  string `json:"firstFaultDomainHosts"`
+	SecondFaultDomainHosts string `json:"secondFaultDomainHosts"`
+	FirstFaultDomainName   string `json:"firstFaultDomainName"`
+	SecondFaultDomainName  string `json:"secondFaultDomainName"`
+	PreferredFaultDomain   string `json:"preferredFaultDomain"`
 }
 
 func init() {

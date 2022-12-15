@@ -166,8 +166,8 @@ func toInfoList(devices object.VirtualDeviceList) []infoDevice {
 }
 
 type infoDevice struct {
-	Name string
-	Type string
+	Name string `json:"name"`
+	Type string `json:"type"`
 	types.BaseVirtualDevice
 }
 
@@ -183,7 +183,7 @@ func (d *infoDevice) MarshalJSON() ([]byte, error) {
 }
 
 type infoResult struct {
-	Devices []infoDevice
+	Devices []infoDevice `json:"devices"`
 	// need the full list of devices to lookup attached devices and controllers
 	list object.VirtualDeviceList
 }

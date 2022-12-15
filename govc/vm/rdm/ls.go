@@ -87,7 +87,7 @@ func (cmd *ls) Run(ctx context.Context, f *flag.FlagSet) error {
 }
 
 type infoResult struct {
-	Disks []types.VirtualMachineScsiDiskDeviceInfo
+	Disks []types.VirtualMachineScsiDiskDeviceInfo `json:"disks"`
 }
 
 func (r *infoResult) Write(w io.Writer) error {

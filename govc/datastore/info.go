@@ -180,7 +180,7 @@ func (cmd *info) Run(ctx context.Context, f *flag.FlagSet) error {
 }
 
 type infoResult struct {
-	Datastores []mo.Datastore
+	Datastores []mo.Datastore `json:"datastores"`
 	objects    []*object.Datastore
 }
 

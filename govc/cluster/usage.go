@@ -124,18 +124,18 @@ func (cmd *usage) Run(ctx context.Context, f *flag.FlagSet) error {
 }
 
 type ResourceUsageSummary struct {
-	Used     string
-	Free     string
-	Capacity string
-	Usage    string
+	Used     string `json:"used"`
+	Free     string `json:"free"`
+	Capacity string `json:"capacity"`
+	Usage    string `json:"usage"`
 }
 
 type ResourceUsage struct {
-	Used     int64
-	Free     int64
-	Capacity int64
-	Usage    float64
-	Summary  ResourceUsageSummary
+	Used     int64                `json:"used"`
+	Free     int64                `json:"free"`
+	Capacity int64                `json:"capacity"`
+	Usage    float64              `json:"usage"`
+	Summary  ResourceUsageSummary `json:"summary"`
 }
 
 func (r *ResourceUsage) summarize(f func(int64) string) {
@@ -163,9 +163,9 @@ func size(val int64) string {
 }
 
 type Usage struct {
-	Memory  ResourceUsage
-	CPU     ResourceUsage
-	Storage ResourceUsage
+	Memory  ResourceUsage `json:"memory"`
+	CPU     ResourceUsage `json:"cpu"`
+	Storage ResourceUsage `json:"storage"`
 }
 
 func (r *Usage) Write(w io.Writer) error {

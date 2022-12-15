@@ -58,15 +58,15 @@ func (cmd *info) Process(ctx context.Context) error {
 
 type Override struct {
 	id            types.ManagedObjectReference
-	Name          string
-	Host          string                            `json:",omitempty"`
-	DRS           *types.ClusterDrsVmConfigInfo     `json:",omitempty"`
-	DAS           *types.ClusterDasVmConfigInfo     `json:",omitempty"`
-	Orchestration *types.ClusterVmOrchestrationInfo `json:",omitempty"`
+	Name          string                            `json:"name"`
+	Host          string                            `json:"host,omitempty"`
+	DRS           *types.ClusterDrsVmConfigInfo     `json:"drs,omitempty"`
+	DAS           *types.ClusterDasVmConfigInfo     `json:"das,omitempty"`
+	Orchestration *types.ClusterVmOrchestrationInfo `json:"orchestration,omitempty"`
 }
 
 type infoResult struct {
-	Overrides map[string]*Override
+	Overrides map[string]*Override `json:"overrides"`
 }
 
 func (r *infoResult) Write(w io.Writer) error {

@@ -33,7 +33,7 @@ type about struct {
 	*flags.ClientFlag
 	*flags.OutputFlag
 
-	Long bool
+	Long bool `json:"long"`
 	c    bool
 }
 
@@ -96,9 +96,9 @@ func (cmd *about) Run(ctx context.Context, f *flag.FlagSet) error {
 }
 
 type infoResult struct {
-	Content *types.ServiceContent `json:",omitempty"`
-	About   *types.AboutInfo      `json:",omitempty"`
-	Client  *soap.Client          `json:",omitempty"`
+	Content *types.ServiceContent `json:"content,omitempty"`
+	About   *types.AboutInfo      `json:"about,omitempty"`
+	Client  *soap.Client          `json:"client,omitempty"`
 	a       *types.AboutInfo
 }
 

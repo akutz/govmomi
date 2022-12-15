@@ -132,7 +132,7 @@ func (cmd *info) Run(ctx context.Context, f *flag.FlagSet) error {
 }
 
 type infoResult struct {
-	Datacenters []mo.Datacenter
+	Datacenters []mo.Datacenter `json:"datacenters"`
 	objects     []*object.Datacenter
 	finder      *find.Finder
 	ctx         context.Context

@@ -87,8 +87,8 @@ type ClusterRuleInfo struct {
 	antiAffineHostGroupName string
 
 	// only ClusterDependencyRuleInfo
-	VmGroup          string
-	DependsOnVmGroup string
+	VmGroup          string `json:"vmGroup"`
+	DependsOnVmGroup string `json:"dependsOnVmGroup"`
 }
 
 func (f *InfoFlag) Rule(ctx context.Context) (*ClusterRuleInfo, error) {

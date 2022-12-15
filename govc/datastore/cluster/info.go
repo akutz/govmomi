@@ -107,7 +107,7 @@ func (cmd *info) Run(ctx context.Context, f *flag.FlagSet) error {
 }
 
 type infoResult struct {
-	Clusters []mo.StoragePod
+	Clusters []mo.StoragePod `json:"clusters"`
 	objects  []*object.StoragePod
 }
 
