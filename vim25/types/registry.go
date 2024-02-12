@@ -65,3 +65,11 @@ func TypeFunc() Func {
 		return typ, ok
 	}
 }
+
+func AllTypes() []reflect.Type {
+	var all []reflect.Type
+	for _, v := range t {
+		all = append(all, v)
+	}
+	return all
+}

@@ -79,6 +79,7 @@ import (
 	_ "github.com/vmware/govmomi/govc/namespace/cluster"
 	_ "github.com/vmware/govmomi/govc/namespace/service"
 	_ "github.com/vmware/govmomi/govc/object"
+	_ "github.com/vmware/govmomi/govc/object/model"
 	_ "github.com/vmware/govmomi/govc/option"
 	_ "github.com/vmware/govmomi/govc/permissions"
 	_ "github.com/vmware/govmomi/govc/pool"

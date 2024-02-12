@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2014 VMware, Inc. All Rights Reserved.
+Copyright (c) 2014-2024 VMware, Inc. All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,6 +16,32 @@ limitations under the License.
 
 package mo
 
-import "reflect"
+import (
+	"reflect"
+	"strings"
+)
 
 var t = map[string]reflect.Type{}
+
+type Func func(string) (reflect.Type, bool)
+
+func TypeFunc() Func {
+	return func(name string) (reflect.Type, bool) {
+		typ, ok := t[name]
+		if !ok {
+			// The /sdk endpoint does not prefix types with the namespace,
+			// but extension endpoints, such as /pbm/sdk do.
+			name = strings.TrimPrefix(name, "vim25:")
+			typ, ok = t[name]
+		}
+		return typ, ok
+	}
+}
+
+func AllTypes() []reflect.Type {
+	var all []reflect.Type
+	for _, v := range t {
+		all = append(all, v)
+	}
+	return all
+}
