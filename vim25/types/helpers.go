@@ -17,6 +17,7 @@ limitations under the License.
 package types
 
 import (
+	"fmt"
 	"net/url"
 	"reflect"
 	"strings"
@@ -43,30 +44,83 @@ func NewReference(r ManagedObjectReference) *ManagedObjectReference {
 	return &r
 }
 
+func (r ManagedObjectReference) IsEmpty() bool {
+	return r.Type == "" || r.Value == ""
+}
+
 func (r ManagedObjectReference) Reference() ManagedObjectReference {
 	return r
 }
 
 func (r ManagedObjectReference) String() string {
-	return strings.Join([]string{r.Type, r.Value}, ":")
+	if r.IsEmpty() {
+		return ""
+	}
+	if r.ServerGUID != "" {
+		return fmt.Sprintf("%s:%s:%s", r.Type, r.Value, r.ServerGUID)
+	}
+	return fmt.Sprintf("%s:%s", r.Type, r.Value)
 }
 
-func (r *ManagedObjectReference) FromString(o string) bool {
-	s := strings.SplitN(o, ":", 2)
+func (r *ManagedObjectReference) FromString(s string) bool {
+	*r, _ = ParseManagedObjectReference(s)
+	return !r.IsEmpty()
+}
 
-	if len(s) != 2 {
-		return false
+func ParseManagedObjectReference(s string) (ManagedObjectReference, error) {
+	parts := strings.SplitN(s, ":", 3)
+	if len(parts) < 2 {
+		return ManagedObjectReference{}, fmt.Errorf("invalid ref: %q", s)
 	}
-
-	r.Type = s[0]
-	r.Value = s[1]
-
-	return true
+	r := ManagedObjectReference{Type: parts[0], Value: parts[1]}
+	if len(parts) == 3 {
+		parts = strings.Split(parts[2], ":")
+		if len(parts) != 1 {
+			return ManagedObjectReference{}, fmt.Errorf("invalid ref: %q", s)
+		}
+		r.ServerGUID = parts[0]
+	}
+	return r, nil
 }
 
 // Encode ManagedObjectReference for use with URL and File paths
 func (r ManagedObjectReference) Encode() string {
-	return strings.Join([]string{r.Type, url.QueryEscape(r.Value)}, "-")
+	if r.IsEmpty() {
+		return ""
+	}
+	value := url.QueryEscape(r.Value)
+	if r.ServerGUID != "" {
+		return fmt.Sprintf("%s.%s.%s", r.Type, value, r.ServerGUID)
+	}
+	return fmt.Sprintf("%s.%s", r.Type, value)
+}
+
+func (r *ManagedObjectReference) Decode(s string) bool {
+	*r, _ = DecodeManagedObjectReference(s)
+	return !r.IsEmpty()
+}
+
+func DecodeManagedObjectReference(s string) (ManagedObjectReference, error) {
+	parts := strings.SplitN(s, ".", 3)
+	if len(parts) < 2 {
+		return ManagedObjectReference{}, fmt.Errorf("invalid ref: %q", s)
+	}
+	value, err := url.QueryUnescape(parts[1])
+	if err != nil {
+		return ManagedObjectReference{}, fmt.Errorf("invalid ref: %q: %w", s, err)
+	}
+	r := ManagedObjectReference{
+		Type:  parts[0],
+		Value: value,
+	}
+	if len(parts) == 3 {
+		parts = strings.Split(parts[2], ".")
+		if len(parts) != 1 {
+			return ManagedObjectReference{}, fmt.Errorf("invalid ref: %q", s)
+		}
+		r.ServerGUID = parts[0]
+	}
+	return r, nil
 }
 
 func (c *PerfCounterInfo) Name() string {
