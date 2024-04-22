@@ -599,6 +599,14 @@ func (c *Client) setInsecureCookies(res *http.Response) {
 	}
 }
 
+type contentLengthCallbackKeyType uint8
+
+const contentLengthCallbackKeyVal contentLengthCallbackKeyType = 0
+
+func WithContentLengthCallback(ctx context.Context, fn func(int64)) context.Context {
+	return context.WithValue(ctx, contentLengthCallbackKeyVal, fn)
+}
+
 // Do is equivalent to http.Client.Do and takes care of API specifics including
 // logging, user-agent header, handling cookies, measuring responsiveness of the
 // API
@@ -739,6 +747,7 @@ func (c *Client) soapRoundTrip(ctx context.Context, reqBody, resBody HasFault) e
 	req.Header.Set(`SOAPAction`, action)
 
 	return c.Do(ctx, req, func(res *http.Response) error {
+
 		switch res.StatusCode {
 		case http.StatusOK:
 			// OK
@@ -748,11 +757,18 @@ func (c *Client) soapRoundTrip(ctx context.Context, reqBody, resBody HasFault) e
 			return newStatusError(res)
 		}
 
-		dec := xml.NewDecoder(res.Body)
+		var buf bytes.Buffer
+		tee := io.TeeReader(res.Body, &buf)
+
+		dec := xml.NewDecoder(tee)
 		dec.TypeFunc = c.Types
 		err = dec.Decode(&resEnv)
 		if err != nil {
 			return err
+		}
+
+		if fn, ok := ctx.Value(contentLengthCallbackKeyVal).(func(int64)); ok {
+			fn(int64(buf.Len()))
 		}
 
 		if f := resBody.Fault(); f != nil {
