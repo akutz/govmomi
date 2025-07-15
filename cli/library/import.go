@@ -7,13 +7,14 @@ package library
 import (
 	"context"
 	"errors"
-	"flag"
 	"fmt"
 	"net/url"
 	"os"
 	"path/filepath"
 	"strings"
 	"time"
+
+	flag "github.com/spf13/pflag"
 
 	"github.com/vmware/govmomi/cli"
 	"github.com/vmware/govmomi/cli/flags"
@@ -44,7 +45,7 @@ func (cmd *item) Register(ctx context.Context, f *flag.FlagSet) {
 	cmd.OutputFlag.Register(ctx, f)
 
 	f.StringVar(&cmd.Name, "n", "", "Library item name")
-	f.StringVar(&cmd.Type, "t", "", "Library item type")
+	f.StringVar(&cmd.Item.Type, "t", "", "Library item type")
 	f.BoolVar(&cmd.manifest, "m", false, "Require ova manifest")
 	f.BoolVar(&cmd.pull, "pull", false, "Pull library item from http endpoint")
 	f.StringVar(&cmd.Checksum.Checksum, "c", "", "Checksum value to verify the pulled library item")
@@ -121,11 +122,11 @@ func (cmd *item) Run(ctx context.Context, f *flag.FlagSet) error {
 		kind = library.ItemTypeISO
 	}
 
-	if cmd.Type == "" {
-		cmd.Type = kind
+	if cmd.Item.Type == "" {
+		cmd.Item.Type = kind
 	}
 
-	if !cmd.pull && cmd.Type == library.ItemTypeOVF {
+	if !cmd.pull && cmd.Item.Type == library.ItemTypeOVF {
 		f, _, err := archive.Open(mf)
 		if err == nil {
 			sums, err := library.ReadManifest(f)
@@ -229,7 +230,7 @@ func (cmd *item) Run(ctx context.Context, f *flag.FlagSet) error {
 		return err
 	}
 
-	if cmd.Type == library.ItemTypeOVF {
+	if cmd.Item.Type == library.ItemTypeOVF {
 		o, err := importer.ReadOvf(base, archive)
 		if err != nil {
 			return err

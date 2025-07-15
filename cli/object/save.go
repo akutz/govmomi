@@ -6,11 +6,12 @@ package object
 
 import (
 	"context"
-	"flag"
 	"fmt"
 	"os"
 	"path/filepath"
 	"sort"
+
+	flag "github.com/spf13/pflag"
 
 	"github.com/vmware/govmomi/cli"
 	"github.com/vmware/govmomi/cli/flags"

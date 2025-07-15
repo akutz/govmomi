@@ -12,13 +12,14 @@ import (
 	"crypto/x509"
 	"crypto/x509/pkix"
 	"encoding/pem"
-	"flag"
 	"fmt"
 	"io"
 	"math/big"
 	"os"
 	"strings"
 	"time"
+
+	flag "github.com/spf13/pflag"
 
 	"github.com/vmware/govmomi/cli"
 	"github.com/vmware/govmomi/cli/flags"

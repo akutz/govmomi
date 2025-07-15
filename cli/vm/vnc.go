@@ -7,13 +7,14 @@ package vm
 import (
 	"context"
 	"encoding/json"
-	"flag"
 	"fmt"
 	"io"
 	"reflect"
 	"regexp"
 	"strconv"
 	"strings"
+
+	flag "github.com/spf13/pflag"
 
 	"github.com/vmware/govmomi/cli"
 	"github.com/vmware/govmomi/cli/flags"
@@ -26,6 +27,10 @@ import (
 
 type intRange struct {
 	low, high int
+}
+
+func (i intRange) Type() string {
+	return "intRange"
 }
 
 var intRangeRegexp = regexp.MustCompile("^([0-9]+)-([0-9]+)$")

@@ -6,13 +6,14 @@ package check
 
 import (
 	"context"
-	"flag"
 	"fmt"
 	"io"
 	"os"
 	"slices"
 	"strings"
 	"text/tabwriter"
+
+	flag "github.com/spf13/pflag"
 
 	"github.com/vmware/govmomi/cli/flags"
 	"github.com/vmware/govmomi/find"
@@ -30,6 +31,10 @@ var checkTestTypesList = []string{
 }
 
 type checkTestTypes []types.CheckTestType
+
+func (c checkTestTypes) Type() string {
+	return "checkTestTypes"
+}
 
 func (c *checkTestTypes) String() string {
 	return fmt.Sprint(*c)

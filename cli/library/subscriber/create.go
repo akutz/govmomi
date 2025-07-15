@@ -6,8 +6,9 @@ package subscriber
 
 import (
 	"context"
-	"flag"
 	"fmt"
+
+	flag "github.com/spf13/pflag"
 
 	"github.com/vmware/govmomi/cli"
 	"github.com/vmware/govmomi/cli/flags"

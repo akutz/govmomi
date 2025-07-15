@@ -6,7 +6,8 @@ package flags
 
 import (
 	"context"
-	"flag"
+
+	flag "github.com/spf13/pflag"
 )
 
 type EmptyFlag struct{}

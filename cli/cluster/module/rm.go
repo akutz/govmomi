@@ -7,9 +7,10 @@ package module
 import (
 	"bufio"
 	"context"
-	"flag"
 	"os"
 	"strings"
+
+	flag "github.com/spf13/pflag"
 
 	"github.com/vmware/govmomi/cli"
 	"github.com/vmware/govmomi/cli/flags"

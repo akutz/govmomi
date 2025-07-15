@@ -7,9 +7,10 @@ package version
 import (
 	"context"
 	"encoding/base64"
-	"flag"
 	"fmt"
 	"os"
+
+	flag "github.com/spf13/pflag"
 
 	"github.com/vmware/govmomi/cli"
 	"github.com/vmware/govmomi/cli/flags"

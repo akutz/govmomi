@@ -6,11 +6,12 @@ package namespace
 
 import (
 	"context"
-	"flag"
 	"fmt"
 	"io"
 	"strings"
 	"text/tabwriter"
+
+	flag "github.com/spf13/pflag"
 
 	"github.com/vmware/govmomi/find"
 	"github.com/vmware/govmomi/vapi/library"

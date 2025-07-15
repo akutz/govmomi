@@ -7,9 +7,10 @@ package importx
 import (
 	"context"
 	"encoding/json"
-	"flag"
 	"fmt"
 	"os"
+
+	flag "github.com/spf13/pflag"
 
 	"github.com/vmware/govmomi/cli/flags"
 	"github.com/vmware/govmomi/object"

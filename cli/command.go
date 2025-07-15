@@ -6,7 +6,6 @@ package cli
 
 import (
 	"context"
-	"flag"
 	"fmt"
 	"io"
 	"os"
@@ -14,6 +13,8 @@ import (
 	"sort"
 	"strings"
 	"text/tabwriter"
+
+	flag "github.com/spf13/pflag"
 
 	"github.com/vmware/govmomi/vim25/types"
 )

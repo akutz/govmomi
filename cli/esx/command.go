@@ -5,9 +5,10 @@
 package esx
 
 import (
-	"flag"
 	"fmt"
 	"strings"
+
+	flag "github.com/spf13/pflag"
 
 	"github.com/vmware/govmomi/internal"
 )
@@ -26,7 +27,7 @@ type CommandInfoItem struct {
 type CommandInfoParam struct {
 	CommandInfoItem
 	Aliases []string `xml:"aliases" json:"aliases"`
-	Flag    bool     `xml:"flag" json:"flag"`
+	Flag    bool     `xml:flag "github.com/spf13/pflag" json:flag "github.com/spf13/pflag"`
 }
 
 type CommandInfoHint struct {
@@ -79,6 +80,10 @@ func (c *Command) Moid() string {
 }
 
 type stringList []string
+
+func (l stringList) Type() string {
+	return "stringSlice"
+}
 
 func (l *stringList) String() string {
 	return fmt.Sprint(*l)

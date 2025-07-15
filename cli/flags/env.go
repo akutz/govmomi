@@ -6,7 +6,8 @@ package flags
 
 import (
 	"context"
-	"flag"
+
+	flag "github.com/spf13/pflag"
 
 	"github.com/vmware/govmomi/object"
 	"github.com/vmware/govmomi/vim25/mo"

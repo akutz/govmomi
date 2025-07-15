@@ -7,11 +7,12 @@ package object
 import (
 	"bytes"
 	"context"
-	"flag"
 	"fmt"
 	"io"
 	"strings"
 	"text/tabwriter"
+
+	flag "github.com/spf13/pflag"
 
 	"github.com/vmware/govmomi/cli"
 	"github.com/vmware/govmomi/cli/flags"
@@ -67,6 +68,10 @@ func aliasHelp() string {
 }
 
 type kinds []string
+
+func (e kinds) Type() string {
+	return "kinds"
+}
 
 func (e *kinds) String() string {
 	return fmt.Sprint(*e)

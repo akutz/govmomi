@@ -8,7 +8,8 @@ import (
 	"context"
 	"encoding/base64"
 	"encoding/pem"
-	"flag"
+
+	flag "github.com/spf13/pflag"
 
 	"github.com/vmware/govmomi/cli"
 	"github.com/vmware/govmomi/cli/flags"

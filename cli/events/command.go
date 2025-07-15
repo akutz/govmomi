@@ -6,13 +6,14 @@ package events
 
 import (
 	"context"
-	"flag"
 	"fmt"
 	"io"
 	"os"
 	"reflect"
 	"strings"
 	"time"
+
+	flag "github.com/spf13/pflag"
 
 	"github.com/vmware/govmomi/cli"
 	"github.com/vmware/govmomi/cli/flags"
@@ -31,6 +32,10 @@ type events struct {
 }
 
 type kinds []string
+
+func (l kinds) Type() string {
+	return "stringSlice"
+}
 
 func (e *kinds) String() string {
 	return fmt.Sprint(*e)

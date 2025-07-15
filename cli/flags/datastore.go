@@ -6,10 +6,11 @@ package flags
 
 import (
 	"context"
-	"flag"
 	"fmt"
 	"net/url"
 	"os"
+
+	flag "github.com/spf13/pflag"
 
 	"github.com/vmware/govmomi/object"
 	"github.com/vmware/govmomi/vapi/library"

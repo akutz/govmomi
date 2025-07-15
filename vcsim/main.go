@@ -7,7 +7,6 @@ package main
 import (
 	"crypto/tls"
 	"expvar"
-	"flag"
 	"fmt"
 	"log"
 	"net"
@@ -19,6 +18,8 @@ import (
 	"strconv"
 	"strings"
 	"syscall"
+
+	flag "github.com/spf13/pflag"
 
 	"github.com/google/uuid"
 

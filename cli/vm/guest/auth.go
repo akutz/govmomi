@@ -6,10 +6,11 @@ package guest
 
 import (
 	"context"
-	"flag"
 	"fmt"
 	"os"
 	"strings"
+
+	flag "github.com/spf13/pflag"
 
 	"github.com/vmware/govmomi/vim25/types"
 )
@@ -17,6 +18,10 @@ import (
 type AuthFlag struct {
 	auth types.NamePasswordAuthentication
 	proc bool
+}
+
+func (flag AuthFlag) Type() string {
+	return "AuthFlag"
 }
 
 func newAuthFlag(ctx context.Context) (*AuthFlag, context.Context) {

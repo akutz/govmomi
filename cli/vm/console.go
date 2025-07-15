@@ -6,11 +6,12 @@ package vm
 
 import (
 	"context"
-	"flag"
 	"fmt"
 	"io"
 	"net/url"
 	"os"
+
+	flag "github.com/spf13/pflag"
 
 	"github.com/vmware/govmomi/cli"
 	"github.com/vmware/govmomi/cli/flags"

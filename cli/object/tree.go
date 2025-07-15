@@ -6,12 +6,13 @@ package object
 
 import (
 	"context"
-	"flag"
 	"fmt"
 	"net/url"
 	"os"
 	gopath "path"
 	"time"
+
+	flag "github.com/spf13/pflag"
 
 	gotree "github.com/a8m/tree"
 

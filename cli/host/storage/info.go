@@ -6,11 +6,12 @@ package storage
 
 import (
 	"context"
-	"flag"
 	"fmt"
 	"io"
 	"strings"
 	"text/tabwriter"
+
+	flag "github.com/spf13/pflag"
 
 	"github.com/vmware/govmomi/cli"
 	"github.com/vmware/govmomi/cli/flags"
@@ -22,6 +23,10 @@ import (
 var infoTypes = []string{"hba", "lun"}
 
 type infoType string
+
+func (t infoType) Type() string {
+	return "infoType"
+}
 
 func (t *infoType) Set(s string) error {
 	s = strings.ToLower(s)

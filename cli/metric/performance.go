@@ -6,10 +6,11 @@ package metric
 
 import (
 	"context"
-	"flag"
 	"fmt"
 	"math"
 	"strconv"
+
+	flag "github.com/spf13/pflag"
 
 	"github.com/vmware/govmomi/cli/flags"
 	"github.com/vmware/govmomi/performance"

@@ -10,13 +10,14 @@ import (
 	"crypto/sha1"
 	"crypto/sha256"
 	"crypto/sha512"
-	"flag"
 	"fmt"
 	"hash"
 	"io"
 	"os"
 	"path/filepath"
 	"strings"
+
+	flag "github.com/spf13/pflag"
 
 	"github.com/vmware/govmomi/object"
 

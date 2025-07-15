@@ -6,10 +6,11 @@ package toolbox
 
 import (
 	"encoding/hex"
-	"flag"
 	"fmt"
 	"io"
 	"os"
+
+	flag "github.com/spf13/pflag"
 )
 
 var (

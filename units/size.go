@@ -23,6 +23,10 @@ const (
 	EB
 )
 
+func (b ByteSize) Type() string {
+	return "int64"
+}
+
 func (b ByteSize) String() string {
 	switch {
 	case b >= EB:
@@ -42,6 +46,10 @@ func (b ByteSize) String() string {
 }
 
 type FileSize int64
+
+func (b FileSize) Type() string {
+	return "int64"
+}
 
 func (b FileSize) String() string {
 	switch {

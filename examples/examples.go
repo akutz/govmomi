@@ -6,12 +6,13 @@ package examples
 
 import (
 	"context"
-	"flag"
 	"fmt"
 	"log"
 	"net/url"
 	"os"
 	"strings"
+
+	flag "github.com/spf13/pflag"
 
 	"github.com/vmware/govmomi/session/cache"
 	"github.com/vmware/govmomi/simulator"

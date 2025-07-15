@@ -8,13 +8,14 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"flag"
 	"fmt"
 	"io"
 	"os"
 	"reflect"
 	"strings"
 	"time"
+
+	flag "github.com/spf13/pflag"
 
 	"github.com/dougm/pretty"
 

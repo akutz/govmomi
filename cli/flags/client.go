@@ -8,7 +8,6 @@ import (
 	"context"
 	"crypto/tls"
 	"errors"
-	"flag"
 	"fmt"
 	"net/url"
 	"os"
@@ -17,6 +16,8 @@ import (
 	"strings"
 	"syscall"
 	"time"
+
+	flag "github.com/spf13/pflag"
 
 	"github.com/vmware/govmomi/cns"
 	"github.com/vmware/govmomi/pbm"
@@ -84,6 +85,10 @@ func NewClientFlag(ctx context.Context) (*ClientFlag, context.Context) {
 	v.DebugFlag, ctx = NewDebugFlag(ctx)
 	ctx = context.WithValue(ctx, clientFlagKey, v)
 	return v, ctx
+}
+
+func (l *ClientFlag) Type() string {
+	return "object"
 }
 
 func (flag *ClientFlag) String() string {

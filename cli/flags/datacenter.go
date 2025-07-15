@@ -6,10 +6,11 @@ package flags
 
 import (
 	"context"
-	"flag"
 	"fmt"
 	"os"
 	"strings"
+
+	flag "github.com/spf13/pflag"
 
 	"github.com/vmware/govmomi/find"
 	"github.com/vmware/govmomi/object"

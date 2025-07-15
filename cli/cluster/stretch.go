@@ -6,9 +6,10 @@ package cluster
 
 import (
 	"context"
-	"flag"
 	"fmt"
 	"strings"
+
+	flag "github.com/spf13/pflag"
 
 	"github.com/vmware/govmomi/cli"
 	"github.com/vmware/govmomi/cli/flags"

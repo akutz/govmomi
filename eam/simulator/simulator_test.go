@@ -6,13 +6,14 @@ package simulator_test
 
 import (
 	"context"
-	"flag"
 	"fmt"
 	"os"
 	"os/signal"
 	"sync"
 	"testing"
 	"time"
+
+	flag "github.com/spf13/pflag"
 
 	"github.com/vmware/govmomi/eam"
 	"github.com/vmware/govmomi/eam/object"

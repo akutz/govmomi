@@ -6,8 +6,9 @@ package main
 
 import (
 	"context"
-	"flag"
 	"time"
+
+	flag "github.com/spf13/pflag"
 
 	"github.com/dougm/pretty"
 

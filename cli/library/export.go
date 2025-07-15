@@ -6,13 +6,14 @@ package library
 
 import (
 	"context"
-	"flag"
 	"fmt"
 	"io"
 	"net/url"
 	"os"
 	"path/filepath"
 	"time"
+
+	flag "github.com/spf13/pflag"
 
 	"github.com/vmware/govmomi/cli"
 	"github.com/vmware/govmomi/cli/flags"

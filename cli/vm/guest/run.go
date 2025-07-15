@@ -7,9 +7,10 @@ package guest
 import (
 	"bytes"
 	"context"
-	"flag"
 	"os"
 	"os/exec"
+
+	flag "github.com/spf13/pflag"
 
 	"github.com/vmware/govmomi/cli"
 )

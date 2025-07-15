@@ -7,8 +7,9 @@ package flags
 import (
 	"context"
 	"errors"
-	"flag"
 	"fmt"
+
+	flag "github.com/spf13/pflag"
 
 	"github.com/vmware/govmomi/vim25/types"
 )

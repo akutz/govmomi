@@ -6,9 +6,10 @@ package date
 
 import (
 	"context"
-	"flag"
 	"strings"
 	"time"
+
+	flag "github.com/spf13/pflag"
 
 	"github.com/vmware/govmomi/cli"
 	"github.com/vmware/govmomi/cli/flags"
@@ -28,6 +29,10 @@ func init() {
 }
 
 type serverConfig types.HostNtpConfig
+
+func (s serverConfig) Type() string {
+	return "serverConfig"
+}
 
 func (s *serverConfig) String() string {
 	return strings.Join(s.Server, ",")

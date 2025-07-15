@@ -10,8 +10,9 @@ package main
 
 import (
 	"context"
-	"flag"
 	"fmt"
+
+	flag "github.com/spf13/pflag"
 
 	"github.com/vmware/govmomi/examples"
 	"github.com/vmware/govmomi/performance"

@@ -16,3 +16,7 @@ func (l *StringList) Set(value string) error {
 	*l = append(*l, value)
 	return nil
 }
+
+func (l StringList) Type() string {
+	return "stringSlice"
+}

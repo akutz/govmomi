@@ -5,14 +5,19 @@
 package flags
 
 import (
-	"flag"
 	"fmt"
 	"strconv"
+
+	flag "github.com/spf13/pflag"
 )
 
 // This flag type is internal to stdlib:
 // https://github.com/golang/go/blob/master/src/cmd/internal/obj/flag.go
 type int32Value int32
+
+func (i int32Value) Type() string {
+	return "int32"
+}
 
 func (i *int32Value) Set(s string) error {
 	v, err := strconv.ParseInt(s, 0, 32)
@@ -35,6 +40,10 @@ func NewInt32(v *int32) flag.Value {
 
 type int32ptrValue struct {
 	val **int32
+}
+
+func (i int32ptrValue) Type() string {
+	return "int32ptr"
 }
 
 func (i *int32ptrValue) Set(s string) error {

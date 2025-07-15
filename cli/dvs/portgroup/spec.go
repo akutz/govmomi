@@ -6,10 +6,11 @@ package portgroup
 
 import (
 	"context"
-	"flag"
 	"fmt"
 	"strconv"
 	"strings"
+
+	flag "github.com/spf13/pflag"
 
 	"github.com/vmware/govmomi/cli/flags"
 	"github.com/vmware/govmomi/vim25/types"

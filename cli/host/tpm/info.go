@@ -6,13 +6,14 @@ package tpm
 
 import (
 	"context"
-	"flag"
 	"fmt"
 	"io"
 	"strconv"
 	"strings"
 	"text/tabwriter"
 	"time"
+
+	flag "github.com/spf13/pflag"
 
 	"github.com/vmware/govmomi/cli"
 	"github.com/vmware/govmomi/cli/flags"

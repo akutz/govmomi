@@ -7,7 +7,6 @@ package flags
 import (
 	"bufio"
 	"context"
-	"flag"
 	"fmt"
 	"io"
 	"os"
@@ -18,6 +17,8 @@ import (
 	"sync"
 	"text/tabwriter"
 	"time"
+
+	flag "github.com/spf13/pflag"
 
 	"github.com/dougm/pretty"
 

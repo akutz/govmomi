@@ -6,12 +6,13 @@ package volume
 
 import (
 	"context"
-	"flag"
 	"fmt"
 	"io"
 	"log"
 	"strings"
 	"text/tabwriter"
+
+	flag "github.com/spf13/pflag"
 
 	"github.com/vmware/govmomi/cli"
 	"github.com/vmware/govmomi/cli/flags"
@@ -36,6 +37,10 @@ type ls struct {
 }
 
 type keyValue []vim.KeyValue
+
+func (e keyValue) Type() string {
+	return "keyValue"
+}
 
 func (e *keyValue) String() string {
 	return fmt.Sprintf("%v", *e)

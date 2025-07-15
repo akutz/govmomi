@@ -7,11 +7,12 @@ package datastore
 import (
 	"context"
 	"errors"
-	"flag"
 	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
+
+	flag "github.com/spf13/pflag"
 
 	"github.com/vmware/govmomi/cli"
 	"github.com/vmware/govmomi/cli/flags"
@@ -77,6 +78,10 @@ func init() {
 }
 
 type typeFlag string
+
+func (b typeFlag) Type() string {
+	return "string"
+}
 
 func (t *typeFlag) Set(s string) error {
 	s = strings.ToLower(s)

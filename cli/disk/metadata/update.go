@@ -6,9 +6,10 @@ package metadata
 
 import (
 	"context"
-	"flag"
 	"strings"
 	"time"
+
+	flag "github.com/spf13/pflag"
 
 	"github.com/vmware/govmomi/cli"
 	"github.com/vmware/govmomi/cli/flags"

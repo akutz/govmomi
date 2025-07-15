@@ -7,11 +7,12 @@ package folder
 import (
 	"context"
 	"errors"
-	"flag"
 	"fmt"
 	"io"
 	"strings"
 	"text/tabwriter"
+
+	flag "github.com/spf13/pflag"
 
 	"github.com/vmware/govmomi/cli"
 	"github.com/vmware/govmomi/cli/flags"
@@ -42,6 +43,10 @@ func init() {
 }
 
 type typeFlag string
+
+func (t typeFlag) Type() string {
+	return "typeFlag"
+}
 
 func (t *typeFlag) Set(s string) error {
 	s = strings.ToLower(s)

@@ -6,11 +6,12 @@ package model
 
 import (
 	"context"
-	"flag"
 	"fmt"
 	"reflect"
 	"sort"
 	"unsafe"
+
+	flag "github.com/spf13/pflag"
 
 	"github.com/xlab/treeprint"
 

@@ -6,7 +6,6 @@ package hgfs
 
 import (
 	"errors"
-	"flag"
 	"fmt"
 	"io"
 	"log"
@@ -18,6 +17,8 @@ import (
 	"strings"
 	"sync"
 	"sync/atomic"
+
+	flag "github.com/spf13/pflag"
 )
 
 // See: https://github.com/vmware/open-vm-tools/blob/master/open-vm-tools/lib/hgfsServer/hgfsServer.c

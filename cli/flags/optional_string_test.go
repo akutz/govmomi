@@ -5,8 +5,9 @@
 package flags
 
 import (
-	"flag"
 	"testing"
+
+	flag "github.com/spf13/pflag"
 )
 
 func TestOptionalString(t *testing.T) {
@@ -25,7 +26,7 @@ func TestOptionalString(t *testing.T) {
 		t.Fail()
 	}
 
-	if s.Value.(flag.Getter).Get() != nil {
+	if s.Value.(getter).Get() != nil {
 		t.Fail()
 	}
 
@@ -35,7 +36,7 @@ func TestOptionalString(t *testing.T) {
 		t.Fail()
 	}
 
-	if s.Value.(flag.Getter).Get() != "test" {
+	if s.Value.(getter).Get() != "test" {
 		t.Fail()
 	}
 

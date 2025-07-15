@@ -5,9 +5,14 @@
 package flags
 
 import (
-	"flag"
 	"testing"
+
+	flag "github.com/spf13/pflag"
 )
+
+type getter interface {
+	Get() any
+}
 
 func TestOptionalBool(t *testing.T) {
 	fs := flag.NewFlagSet("", flag.ContinueOnError)
@@ -25,7 +30,7 @@ func TestOptionalBool(t *testing.T) {
 		t.Fail()
 	}
 
-	if b.Value.(flag.Getter).Get() != nil {
+	if b.Value.(getter).Get() != nil {
 		t.Fail()
 	}
 
@@ -35,7 +40,7 @@ func TestOptionalBool(t *testing.T) {
 		t.Fail()
 	}
 
-	if b.Value.(flag.Getter).Get() != true {
+	if b.Value.(getter).Get() != true {
 		t.Fail()
 	}
 
@@ -49,7 +54,7 @@ func TestOptionalBool(t *testing.T) {
 		t.Fail()
 	}
 
-	if b.Value.(flag.Getter).Get() != false {
+	if b.Value.(getter).Get() != false {
 		t.Fail()
 	}
 

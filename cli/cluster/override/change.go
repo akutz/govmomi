@@ -6,8 +6,9 @@ package override
 
 import (
 	"context"
-	"flag"
 	"strings"
+
+	flag "github.com/spf13/pflag"
 
 	"github.com/vmware/govmomi/cli"
 	"github.com/vmware/govmomi/cli/cluster"

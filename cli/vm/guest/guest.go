@@ -7,8 +7,9 @@ package guest
 import (
 	"context"
 	"errors"
-	"flag"
 	"net/url"
+
+	flag "github.com/spf13/pflag"
 
 	"github.com/vmware/govmomi/cli/flags"
 	"github.com/vmware/govmomi/guest"

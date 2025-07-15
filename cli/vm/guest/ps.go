@@ -6,13 +6,14 @@ package guest
 
 import (
 	"context"
-	"flag"
 	"fmt"
 	"io"
 	"strconv"
 	"strings"
 	"text/tabwriter"
 	"time"
+
+	flag "github.com/spf13/pflag"
 
 	"github.com/vmware/govmomi/cli"
 	"github.com/vmware/govmomi/cli/flags"
@@ -33,6 +34,10 @@ type ps struct {
 
 type pidSelector []int64
 
+func (s pidSelector) Type() string {
+	return "pidSelector"
+}
+
 func (s *pidSelector) String() string {
 	return fmt.Sprint(*s)
 }
@@ -47,6 +52,10 @@ func (s *pidSelector) Set(value string) error {
 }
 
 type uidSelector map[string]bool
+
+func (s uidSelector) Type() string {
+	return "uidSelector"
+}
 
 func (s uidSelector) String() string {
 	return ""

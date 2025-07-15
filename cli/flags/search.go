@@ -7,9 +7,10 @@ package flags
 import (
 	"context"
 	"errors"
-	"flag"
 	"fmt"
 	"strings"
+
+	flag "github.com/spf13/pflag"
 
 	"github.com/vmware/govmomi/fault"
 	"github.com/vmware/govmomi/find"

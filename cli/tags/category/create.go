@@ -6,8 +6,9 @@ package category
 
 import (
 	"context"
-	"flag"
 	"fmt"
+
+	flag "github.com/spf13/pflag"
 
 	"github.com/vmware/govmomi/cli"
 	"github.com/vmware/govmomi/cli/flags"
@@ -34,6 +35,10 @@ func (cmd *create) Register(ctx context.Context, f *flag.FlagSet) {
 }
 
 type kinds []string
+
+func (e kinds) Type() string {
+	return "kinds"
+}
 
 func (e *kinds) String() string {
 	return fmt.Sprint(*e)

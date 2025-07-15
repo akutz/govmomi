@@ -6,8 +6,9 @@ package trust
 
 import (
 	"context"
-	"flag"
 	"io"
+
+	flag "github.com/spf13/pflag"
 
 	"github.com/vmware/govmomi/cli"
 	"github.com/vmware/govmomi/cli/flags"

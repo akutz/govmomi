@@ -6,12 +6,13 @@ package snapshot
 
 import (
 	"context"
-	"flag"
 	"fmt"
 	"io"
 	"os"
 	"text/tabwriter"
 	"time"
+
+	flag "github.com/spf13/pflag"
 
 	"github.com/vmware/govmomi/cli"
 	"github.com/vmware/govmomi/cli/disk"

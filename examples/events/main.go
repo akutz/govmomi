@@ -6,10 +6,11 @@ package main
 
 import (
 	"context"
-	"flag"
 	"fmt"
 	"reflect"
 	"time"
+
+	flag "github.com/spf13/pflag"
 
 	"github.com/vmware/govmomi/event"
 	"github.com/vmware/govmomi/examples"

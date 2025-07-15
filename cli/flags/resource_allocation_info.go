@@ -6,14 +6,19 @@ package flags
 
 import (
 	"context"
-	"flag"
 	"strconv"
 	"strings"
+
+	flag "github.com/spf13/pflag"
 
 	"github.com/vmware/govmomi/vim25/types"
 )
 
 type sharesInfo types.SharesInfo
+
+func (s sharesInfo) Type() string {
+	return "sharesInfo"
+}
 
 func (s *sharesInfo) String() string {
 	return string(s.Level)

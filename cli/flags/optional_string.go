@@ -5,11 +5,15 @@
 package flags
 
 import (
-	"flag"
+	flag "github.com/spf13/pflag"
 )
 
 type optionalString struct {
 	val **string
+}
+
+func (s optionalString) Type() string {
+	return "optionalString"
 }
 
 func (s *optionalString) Set(input string) error {

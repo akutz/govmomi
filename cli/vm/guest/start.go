@@ -6,9 +6,10 @@ package guest
 
 import (
 	"context"
-	"flag"
 	"fmt"
 	"strings"
+
+	flag "github.com/spf13/pflag"
 
 	"github.com/vmware/govmomi/cli"
 	"github.com/vmware/govmomi/vim25/types"
@@ -22,6 +23,10 @@ type start struct {
 }
 
 type env []string
+
+func (e env) Type() string {
+	return "env"
+}
 
 func (e *env) String() string {
 	return fmt.Sprint(*e)

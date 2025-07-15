@@ -6,11 +6,12 @@ package vm
 
 import (
 	"context"
-	"flag"
 	"fmt"
 	"os"
 	"reflect"
 	"strings"
+
+	flag "github.com/spf13/pflag"
 
 	"github.com/vmware/govmomi/cli"
 	"github.com/vmware/govmomi/cli/flags"
@@ -18,6 +19,10 @@ import (
 )
 
 type extraConfig []types.BaseOptionValue
+
+func (e extraConfig) Type() string {
+	return "extraConfig"
+}
 
 func (e *extraConfig) String() string {
 	return fmt.Sprintf("%v", *e)
@@ -33,6 +38,10 @@ func (e *extraConfig) Set(v string) error {
 }
 
 type extraConfigFile []types.BaseOptionValue
+
+func (e extraConfigFile) Type() string {
+	return "extraConfigFile"
+}
 
 func (e *extraConfigFile) String() string {
 	return fmt.Sprintf("%v", *e)

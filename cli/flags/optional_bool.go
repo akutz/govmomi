@@ -5,13 +5,18 @@
 package flags
 
 import (
-	"flag"
 	"fmt"
 	"strconv"
+
+	flag "github.com/spf13/pflag"
 )
 
 type optionalBool struct {
 	val **bool
+}
+
+func (b optionalBool) Type() string {
+	return "optionalBool"
 }
 
 func (b *optionalBool) Set(s string) error {

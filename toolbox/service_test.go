@@ -8,7 +8,6 @@ import (
 	"bytes"
 	"context"
 	"errors"
-	"flag"
 	"io"
 	"log"
 	"net"
@@ -19,6 +18,8 @@ import (
 	"sync"
 	"testing"
 	"time"
+
+	flag "github.com/spf13/pflag"
 
 	"github.com/vmware/govmomi/toolbox/hgfs"
 	"github.com/vmware/govmomi/toolbox/process"

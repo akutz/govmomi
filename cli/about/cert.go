@@ -7,11 +7,12 @@ package about
 import (
 	"context"
 	"encoding/pem"
-	"flag"
 	"fmt"
 	"io"
 	"net/http"
 	"os"
+
+	flag "github.com/spf13/pflag"
 
 	"github.com/vmware/govmomi/cli"
 	"github.com/vmware/govmomi/cli/flags"

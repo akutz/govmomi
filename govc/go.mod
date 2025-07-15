@@ -4,7 +4,10 @@ go 1.23.0
 
 replace github.com/vmware/govmomi => ../
 
-require github.com/vmware/govmomi v0.0.0-00010101000000-000000000000
+require (
+	github.com/spf13/pflag v1.0.6
+	github.com/vmware/govmomi v0.0.0-00010101000000-000000000000
+)
 
 require (
 	github.com/a8m/tree v0.0.0-20240104212747-2c8764a5f17e // indirect

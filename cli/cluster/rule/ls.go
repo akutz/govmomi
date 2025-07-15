@@ -6,9 +6,10 @@ package rule
 
 import (
 	"context"
-	"flag"
 	"fmt"
 	"io"
+
+	flag "github.com/spf13/pflag"
 
 	"github.com/vmware/govmomi/cli"
 )

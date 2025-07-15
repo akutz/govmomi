@@ -5,11 +5,12 @@
 package main
 
 import (
-	"flag"
 	"log"
 	"os"
 	"os/signal"
 	"syscall"
+
+	flag "github.com/spf13/pflag"
 
 	"github.com/vmware/govmomi/toolbox"
 )

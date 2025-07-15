@@ -6,8 +6,9 @@ package main
 
 import (
 	"context"
-	"flag"
 	"testing"
+
+	flag "github.com/spf13/pflag"
 
 	"github.com/vmware/govmomi/cli"
 )
