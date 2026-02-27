@@ -6,6 +6,9 @@ package ovf
 
 import (
 	"bytes"
+	"errors"
+	"fmt"
+	"path"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -51,6 +54,15 @@ func TestEnvelopeToConfigSpec(t *testing.T) {
 			e := testEnvelope(t, "fixtures/virtualsystemcollection.ovf")
 			_, err := e.ToConfigSpec()
 			assert.Error(t, err, "no VirtualSystem")
+		})
+		t.Run("Index out of range", func(t *testing.T) {
+			e := testEnvelope(t, "fixtures/virtualsystemcollection.ovf")
+			_, err := e.ToConfigSpecWithOptions(ToConfigSpecOptions{
+				VirtualSystemCollectionIndex: types.New(int(99)),
+			})
+			if assert.Error(t, err) {
+				assert.Contains(t, err.Error(), "no VirtualSystem")
+			}
 		})
 
 		t.Run("Index 0", func(t *testing.T) {
@@ -649,4 +661,186 @@ func TestEnvelopeToConfigSpec(t *testing.T) {
 			}
 		}
 	})
+
+	t.Run("DSP0243 fixtures", func(t *testing.T) {
+		for _, fixture := range []string{
+			"fixtures/minimal.ovf",
+			"fixtures/empty-disk.ovf",
+			"fixtures/deployment-option-non-default.ovf",
+			"fixtures/property-value-per-config.ovf",
+			"fixtures/ovf2-namespace.ovf",
+			"fixtures/file-references.ovf",
+			"fixtures/two-virtual-hardware-sections.ovf",
+			"fixtures/product-section-class-instance.ovf",
+			"fixtures/item-logical-disk.ovf",
+			"fixtures/two-disks-no-parent.ovf",
+			"fixtures/otherstorage-sata.ovf",
+			"fixtures/otherstorage-nvme.ovf",
+		} {
+			t.Run(path.Base(fixture), func(t *testing.T) {
+				e := testEnvelope(t, fixture)
+				cs, err := e.ToConfigSpec()
+				assert.NoError(t, err)
+				assert.NotEmpty(t, cs)
+			})
+		}
+		t.Run("bound-range-markers", func(t *testing.T) {
+			e := testEnvelope(t, "fixtures/bound-range-markers.ovf")
+			cs, err := e.ToConfigSpec()
+			assert.NoError(t, err)
+			assert.NotEmpty(t, cs)
+			// ovf:bound min/max items are skipped; normal value (512 MB) is used
+			assert.Equal(t, int64(512), cs.MemoryMB)
+		})
+		t.Run("unsupported SerialPort non-Strict", func(t *testing.T) {
+			e := testEnvelope(t, "fixtures/unsupported-serialport.ovf")
+			cs, err := e.ToConfigSpec()
+			assert.NoError(t, err)
+			assert.NotEmpty(t, cs)
+		})
+	})
+
+	t.Run("Strict SerialPort", func(t *testing.T) {
+		e := testEnvelope(t, "fixtures/unsupported-serialport.ovf")
+		_, err := e.ToConfigSpecWithOptions(ToConfigSpecOptions{Strict: true})
+		if assert.Error(t, err) {
+			assert.Contains(t, err.Error(), "unsupported resource type")
+			if ovfErr, ok := AsErrUnsupportedItem(err); assert.True(t, ok) {
+				assert.Equal(t, 2, ovfErr.Index)
+				assert.Equal(t, "3", ovfErr.InstanceID)
+				assert.Equal(t, CIMResourceType(21), ovfErr.ResourceType)
+			}
+		}
+	})
+
+	t.Run("AsErrUnsupportedItem non-OVF error", func(t *testing.T) {
+		plainErr := errors.New("plain error")
+		_, ok := AsErrUnsupportedItem(plainErr)
+		assert.False(t, ok)
+	})
+
+	t.Run("Missing disk", func(t *testing.T) {
+		e := testEnvelope(t, "fixtures/missing-disk.ovf")
+		_, err := e.ToConfigSpec()
+		if assert.Error(t, err) {
+			assert.Contains(t, err.Error(), "missing diskID")
+			if ovfErr, ok := AsErrUnsupportedItem(err); assert.True(t, ok) {
+				assert.Equal(t, 3, ovfErr.Index)
+				assert.Equal(t, "4", ovfErr.InstanceID)
+				assert.Equal(t, CIMResourceType(17), ovfErr.ResourceType)
+			}
+		}
+	})
+
+	t.Run("Multiple HostResource", func(t *testing.T) {
+		e := testEnvelope(t, "fixtures/multiple-hostresource.ovf")
+		_, err := e.ToConfigSpec()
+		if assert.Error(t, err) {
+			assert.Contains(t, err.Error(), "multiple HostResource")
+			if ovfErr, ok := AsErrUnsupportedItem(err); assert.True(t, ok) {
+				assert.Equal(t, 3, ovfErr.Index)
+				assert.Equal(t, "4", ovfErr.InstanceID)
+			}
+		}
+	})
+
+	// Strict mode: each unsupported resource type returns an error.
+	unsupportedTypes := []CIMResourceType{
+		ComputerSystem, FcHba, IScsiHba, IbHba, OtherNetwork, IoSlot, IoDevice,
+		TapeDrive, StorageExtent, SerialPort, ParallelPort, Ieee1394,
+		PartitionableUnit, BasePartitionable, PowerSupply, CoolingDevice,
+		EthernetSwitchPort, StorageVolume, EthernetConnection,
+	}
+	t.Run("Strict unsupported resource types", func(t *testing.T) {
+		for _, rt := range unsupportedTypes {
+			rt := rt
+			t.Run(fmt.Sprintf("type_%d", rt), func(t *testing.T) {
+				e := envelopeWithUnsupportedType(t, rt)
+				_, err := e.ToConfigSpecWithOptions(ToConfigSpecOptions{Strict: true})
+				if assert.Error(t, err) {
+					assert.Contains(t, err.Error(), "unsupported resource type")
+					if ovfErr, ok := AsErrUnsupportedItem(err); assert.True(t, ok) {
+						assert.Equal(t, rt, ovfErr.ResourceType)
+					}
+				}
+			})
+		}
+	})
+
+	t.Run("Strict default resource type", func(t *testing.T) {
+		// ResourceType 35 is not in the enum; hits default case
+		e := testEnvelope(t, "fixtures/unsupported-resourcetype.ovf")
+		_, err := e.ToConfigSpecWithOptions(ToConfigSpecOptions{Strict: true})
+		if assert.Error(t, err) {
+			assert.Contains(t, err.Error(), "unsupported resource type")
+		}
+	})
+
+	t.Run("Invalid AddressOnParent", func(t *testing.T) {
+		e := testEnvelope(t, "fixtures/invalid-address-on-parent.ovf")
+		_, err := e.ToConfigSpec()
+		if assert.Error(t, err) {
+			assert.Contains(t, err.Error(), "AddressOnParent")
+		}
+	})
+
+	t.Run("Invalid Address", func(t *testing.T) {
+		e := testEnvelope(t, "fixtures/invalid-address-controller.ovf")
+		_, err := e.ToConfigSpec()
+		if assert.Error(t, err) {
+			assert.Contains(t, err.Error(), "Address")
+		}
+	})
+
+	t.Run("Invalid PCI slot number", func(t *testing.T) {
+		e := testEnvelope(t, "fixtures/invalid-pci-slot.ovf")
+		_, err := e.ToConfigSpec()
+		if assert.Error(t, err) {
+			assert.Contains(t, err.Error(), "pci slot number")
+		}
+	})
 }
+
+// envelopeWithUnsupportedType returns a minimal envelope with valid CPU/Memory/IDE/NIC
+// plus one item with the given (unsupported) resource type for Strict-mode testing.
+func envelopeWithUnsupportedType(t *testing.T, unsupportedType CIMResourceType) Envelope {
+	t.Helper()
+	one := uint(1)
+	vmx := "vmx-13"
+	zero := "0"
+	e1000 := "E1000"
+	vmNetwork := "VM Network"
+	items := []ResourceAllocationSettingData{
+		{CIMResourceAllocationSettingData: CIMResourceAllocationSettingData{
+			ElementName: "CPU", InstanceID: "1", ResourceType: ptr(Processor), VirtualQuantity: &one}},
+		{CIMResourceAllocationSettingData: CIMResourceAllocationSettingData{
+			ElementName: "Memory", InstanceID: "2", ResourceType: ptr(Memory), VirtualQuantity: &one}},
+		{CIMResourceAllocationSettingData: CIMResourceAllocationSettingData{
+			ElementName: "IDE 0", InstanceID: "5", ResourceType: ptr(IdeController), Address: &zero}},
+		{CIMResourceAllocationSettingData: CIMResourceAllocationSettingData{
+			ElementName: "NIC 1", InstanceID: "6", ResourceType: ptr(EthernetAdapter), ResourceSubType: &e1000, Connection: []string{vmNetwork}}},
+		{CIMResourceAllocationSettingData: CIMResourceAllocationSettingData{
+			ElementName: "Unsupported", InstanceID: "7", ResourceType: &unsupportedType}},
+	}
+	return Envelope{
+		VirtualSystem: &VirtualSystem{
+			Content: Content{ID: "test", Name: strPtr("test")},
+			OperatingSystem: &OperatingSystemSection{},
+			VirtualHardware: []VirtualHardwareSection{{
+				Section: Section{Info: "hw"},
+				System: &VirtualSystemSettingData{
+					CIMVirtualSystemSettingData: CIMVirtualSystemSettingData{
+						VirtualSystemType: &vmx,
+					},
+				},
+				Item: items,
+			}},
+		},
+		Disk:    &DiskSection{},
+		Network: &NetworkSection{Networks: []Network{{Name: vmNetwork}}},
+	}
+}
+
+func ptr(rt CIMResourceType) *CIMResourceType { return &rt }
+
+func strPtr(s string) *string { return &s }

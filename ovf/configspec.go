@@ -132,6 +132,103 @@ type itemElement struct {
 	resourceSubType string
 }
 
+// hardwareEntry is a single Item, EthernetPortItem, or StorageItem to process,
+// with its index in the combined list (for error reporting).
+type hardwareEntry struct {
+	index int
+	item  itemElement
+}
+
+// hardwareEntries returns all Item, EthernetPortItem, and StorageItem elements
+// from hw in document order (DSP0243 §8.1). EthernetPortItem and StorageItem
+// are converted to itemElement so they can be processed by the same switch.
+func (hw VirtualHardwareSection) hardwareEntries() []hardwareEntry {
+	var out []hardwareEntry
+	idx := 0
+	for i := range hw.Item {
+		out = append(out, hardwareEntry{index: idx, item: itemElement{
+			ResourceAllocationSettingData: hw.Item[i],
+		}})
+		idx++
+	}
+	for i := range hw.EthernetPortItem {
+		out = append(out, hardwareEntry{index: idx, item: ethernetToItemElement(hw.EthernetPortItem[i])})
+		idx++
+	}
+	for i := range hw.StorageItem {
+		out = append(out, hardwareEntry{index: idx, item: storageToItemElement(hw.StorageItem[i])})
+		idx++
+	}
+	return out
+}
+
+func ethernetToItemElement(ep EthernetPortAllocationSettingData) itemElement {
+	rt := EthernetAdapter // 10
+	rasd := ResourceAllocationSettingData{
+		CIMResourceAllocationSettingData: CIMResourceAllocationSettingData{
+			ElementName:          ep.ElementName,
+			InstanceID:           ep.InstanceID,
+			ResourceType:         &rt,
+			ResourceSubType:      ep.ResourceSubType,
+			Address:              ep.Address,
+			AddressOnParent:      ep.AddressOnParent,
+			AllocationUnits:      ep.AllocationUnits,
+			AutomaticAllocation:  ep.AutomaticAllocation,
+			Connection:           ep.Connection,
+			Description:          ep.Description,
+			VirtualQuantity:      ep.VirtualQuantity,
+			VirtualQuantityUnits: ep.VirtualQuantityUnits,
+		},
+		Required:      ep.Required,
+		Configuration: ep.Configuration,
+		Bound:         ep.Bound,
+		Config:        ep.Config,
+	}
+	ie := itemElement{ResourceAllocationSettingData: rasd}
+	if ep.ResourceSubType != nil {
+		ie.resourceSubType = strings.ToLower(*ep.ResourceSubType)
+	}
+	return ie
+}
+
+func storageToItemElement(s StorageAllocationSettingData) itemElement {
+	// Map StorageItem (CIM_StorageAllocationSettingData) to RASD for disk handling.
+	// ResourceType 31 (LogicalDisk) is treated as a disk drive (17) for deployment.
+	rt := s.ResourceType
+	if rt == nil {
+		rt = func() *CIMResourceType { x := DiskDrive; return &x }()
+	} else if *rt == LogicalDisk {
+		// Treat LogicalDisk like DiskDrive for ToConfigSpec.
+		rt = func() *CIMResourceType { x := DiskDrive; return &x }()
+	}
+	rasd := ResourceAllocationSettingData{
+		CIMResourceAllocationSettingData: CIMResourceAllocationSettingData{
+			ElementName:          s.ElementName,
+			InstanceID:           s.InstanceID,
+			ResourceType:         rt,
+			ResourceSubType:      s.ResourceSubType,
+			AddressOnParent:      s.AddressOnParent,
+			Address:              s.Address,
+			AllocationUnits:      s.AllocationUnits,
+			AutomaticAllocation:  s.AutomaticAllocation,
+			Description:          s.Description,
+			HostResource:         s.HostResource,
+			Parent:               s.Parent,
+			Reservation:          s.Reservation,
+			VirtualQuantity:      s.VirtualQuantity,
+			VirtualQuantityUnits: s.VirtualQuantityUnits,
+		},
+		Required:      s.Required,
+		Configuration: s.Configuration,
+		Bound:         s.Bound,
+	}
+	ie := itemElement{ResourceAllocationSettingData: rasd}
+	if s.ResourceSubType != nil {
+		ie.resourceSubType = strings.ToLower(*s.ResourceSubType)
+	}
+	return ie
+}
+
 type configSpec = types.VirtualMachineConfigSpec
 
 // ToConfigSpecOptions influence the behavior of the ToConfigSpecWithOptions
@@ -245,9 +342,14 @@ func (e Envelope) toHardware(
 		resources = map[string]types.BaseVirtualDevice{}
 	)
 
-	for index := range hw.Item {
-		item := itemElement{
-			ResourceAllocationSettingData: hw.Item[index],
+	entries := hw.hardwareEntries()
+	for _, entry := range entries {
+		index := entry.index
+		item := &entry.item
+
+		// Skip range markers (DSP0243 §8.4); only the "normal" item is used for ConfigSpec.
+		if b := item.Bound; b != nil && (*b == "min" || *b == "max") {
+			continue
 		}
 
 		if c := item.Configuration; c != nil {
@@ -258,11 +360,11 @@ func (e Envelope) toHardware(
 		}
 
 		if item.ResourceType == nil {
-			return errUnsupportedItem(index, item, nil, "nil ResourceType")
+			return errUnsupportedItem(index, *item, nil, "nil ResourceType")
 		}
 
-		// Get the resource sub type, if any.
-		if rst := item.ResourceSubType; rst != nil {
+		// Get the resource sub type, if any (may already be set for EthernetPortItem/StorageItem).
+		if rst := item.ResourceSubType; rst != nil && item.resourceSubType == "" {
 			item.resourceSubType = strings.ToLower(*rst)
 		}
 
@@ -274,15 +376,17 @@ func (e Envelope) toHardware(
 		switch *item.ResourceType {
 
 		case Other: // 1
-			d, err = e.toOther(item, devices, resources)
+			d, err = e.toOther(*item, devices, resources)
 
 		case ComputerSystem: // 2
-			// TODO(akutz)
+			if opts.Strict {
+				return errUnsupportedItem(index, *item, nil, "unsupported resource type")
+			}
 
 		case Processor: // 3
 			if item.VirtualQuantity == nil {
 				return errUnsupportedItem(
-					index, item, nil, "nil VirtualQuantity")
+					index, *item, nil, "nil VirtualQuantity")
 			}
 			dst.NumCPUs = int32(*item.VirtualQuantity)
 			if cps := item.CoresPerSocket; cps != nil {
@@ -292,36 +396,48 @@ func (e Envelope) toHardware(
 		case Memory: // 4
 			if item.VirtualQuantity == nil {
 				return errUnsupportedItem(
-					index, item, nil, "nil VirtualQuantity")
+					index, *item, nil, "nil VirtualQuantity")
 			}
 			dst.MemoryMB = int64(*item.VirtualQuantity)
 
 		case IdeController: // 5
-			d, err = e.toIDEController(item, devices, resources)
+			d, err = e.toIDEController(*item, devices, resources)
 
 		case ParallelScsiHba: // 6
-			d, err = e.toSCSIController(item, devices, resources)
+			d, err = e.toSCSIController(*item, devices, resources)
 
 		case FcHba: // 7
-			// TODO(akutz)
+			if opts.Strict {
+				return errUnsupportedItem(index, *item, nil, "unsupported resource type")
+			}
 
 		case IScsiHba: // 8
-			// TODO(akutz)
+			if opts.Strict {
+				return errUnsupportedItem(index, *item, nil, "unsupported resource type")
+			}
 
 		case IbHba: // 9
-			// TODO(akutz)
+			if opts.Strict {
+				return errUnsupportedItem(index, *item, nil, "unsupported resource type")
+			}
 
 		case EthernetAdapter: // 10
-			d, err = e.toNetworkInterface(item, devices, resources)
+			d, err = e.toNetworkInterface(*item, devices, resources)
 
 		case OtherNetwork: // 11
-			// TODO(akutz)
+			if opts.Strict {
+				return errUnsupportedItem(index, *item, nil, "unsupported resource type")
+			}
 
 		case IoSlot: // 12
-			// TODO(akutz)
+			if opts.Strict {
+				return errUnsupportedItem(index, *item, nil, "unsupported resource type")
+			}
 
 		case IoDevice: // 13
-			// TODO(akutz)
+			if opts.Strict {
+				return errUnsupportedItem(index, *item, nil, "unsupported resource type")
+			}
 
 		case FloppyDrive: // 14
 			if devices.PickController((*types.VirtualSIOController)(nil)) == nil {
@@ -329,66 +445,98 @@ func (e Envelope) toHardware(
 				c.Key = devices.NewKey()
 				devices = append(devices, c)
 			}
-			d, err = e.toFloppyDrive(item, devices, resources)
+			d, err = e.toFloppyDrive(*item, devices, resources)
 
 		case CdDrive, DvdDrive: // 15, 16
-			d, err = e.toCDOrDVDDrive(item, devices, resources)
+			d, err = e.toCDOrDVDDrive(*item, devices, resources)
 
-		case DiskDrive: // 17
-			d, err = e.toVirtualDisk(item, devices, resources)
+		case DiskDrive: // 17 (StorageItem with ResourceType 31 LogicalDisk is converted to 17 in storageToItemElement)
+			if item.Parent == nil {
+				id := e.ensureDefaultSCSIController(&devices, resources)
+				item.Parent = &id
+			}
+			d, err = e.toVirtualDisk(*item, devices, resources)
 
 		case TapeDrive: // 18
-			// TODO(akutz)
+			if opts.Strict {
+				return errUnsupportedItem(index, *item, nil, "unsupported resource type")
+			}
 
 		case StorageExtent: // 19
-			// TODO(akutz)
+			if opts.Strict {
+				return errUnsupportedItem(index, *item, nil, "unsupported resource type")
+			}
 
 		case OtherStorage: // 20
-			d, err = e.toOtherStorage(item, devices, resources)
+			d, err = e.toOtherStorage(*item, devices, resources)
 
 		case SerialPort: // 21
-			// TODO(akutz)
+			if opts.Strict {
+				return errUnsupportedItem(index, *item, nil, "unsupported resource type")
+			}
 
 		case ParallelPort: // 22
-			// TODO(akutz)
+			if opts.Strict {
+				return errUnsupportedItem(index, *item, nil, "unsupported resource type")
+			}
 
 		case UsbController: // 23
-			d, err = e.toUSB(item, devices, resources)
+			d, err = e.toUSB(*item, devices, resources)
 
 		case Graphics: // 24
-			d, err = e.toVideoCard(item, devices, resources)
+			d, err = e.toVideoCard(*item, devices, resources)
 
 		case Ieee1394: // 25
-			// TODO(akutz)
+			if opts.Strict {
+				return errUnsupportedItem(index, *item, nil, "unsupported resource type")
+			}
 
 		case PartitionableUnit: // 26
-			// TODO(akutz)
+			if opts.Strict {
+				return errUnsupportedItem(index, *item, nil, "unsupported resource type")
+			}
 
 		case BasePartitionable: // 27
-			// TODO(akutz)
+			if opts.Strict {
+				return errUnsupportedItem(index, *item, nil, "unsupported resource type")
+			}
 
 		case PowerSupply: // 28
-			// TODO(akutz)
+			if opts.Strict {
+				return errUnsupportedItem(index, *item, nil, "unsupported resource type")
+			}
 
 		case CoolingDevice: // 29
-			// TODO(akutz)
+			if opts.Strict {
+				return errUnsupportedItem(index, *item, nil, "unsupported resource type")
+			}
 
 		case EthernetSwitchPort: // 30
-			// TODO(akutz)
+			if opts.Strict {
+				return errUnsupportedItem(index, *item, nil, "unsupported resource type")
+			}
 
-		case LogicalDisk: // 31
-			// TODO(akutz)
+		case LogicalDisk: // 31 — treat as disk (Item with ResourceType 31; StorageItem 31 is converted to 17 in storageToItemElement)
+			if item.Parent == nil {
+				id := e.ensureDefaultSCSIController(&devices, resources)
+				item.Parent = &id
+			}
+			d, err = e.toVirtualDisk(*item, devices, resources)
 
 		case StorageVolume: // 32
-			// TODO(akutz)
+			if opts.Strict {
+				return errUnsupportedItem(index, *item, nil, "unsupported resource type")
+			}
 
 		case EthernetConnection: // 33
-			// TODO(akutz)
+			if opts.Strict {
+				return errUnsupportedItem(index, *item, nil, "unsupported resource type")
+			}
 
 		default:
 			if opts.Strict {
 				return errUnsupportedItem(
-					index, item, nil, "unsupported resource type")
+					index, *item, nil, "unsupported resource type")
 			}
 		}
 
@@ -398,16 +546,16 @@ func (e Envelope) toHardware(
 					continue
 				}
 			}
-			return errUnsupportedItem(index, item, err)
+			return errUnsupportedItem(index, *item, err)
 		}
 
 		if d != nil {
-			setConnectable(d, item)
-			if err := e.setUnitNumber(item, d); err != nil {
-				return errUnsupportedItem(index, item, err)
+			setConnectable(d, *item)
+			if err := e.setUnitNumber(*item, d); err != nil {
+				return errUnsupportedItem(index, *item, err)
 			}
-			if err := e.setPCISlotNumber(item, d); err != nil {
-				return errUnsupportedItem(index, item, err)
+			if err := e.setPCISlotNumber(*item, d); err != nil {
+				return errUnsupportedItem(index, *item, err)
 			}
 			devices = append(devices, d)
 		}
@@ -504,6 +652,27 @@ func (e Envelope) ovfDisk(diskID string) *VirtualDiskDesc {
 	return nil
 }
 
+const defaultSCSIControllerInstanceID = "scsi0"
+
+// ensureDefaultSCSIController creates a SCSI controller and registers it under
+// defaultSCSIControllerInstanceID if one is not already present. Used when a
+// disk (Item or StorageItem) has no Parent, e.g. in OVF 2.x StorageItem-only
+// virtual hardware.
+func (e Envelope) ensureDefaultSCSIController(
+	devices *object.VirtualDeviceList,
+	resources map[string]types.BaseVirtualDevice) string {
+	if _, ok := resources[defaultSCSIControllerInstanceID]; ok {
+		return defaultSCSIControllerInstanceID
+	}
+	d, err := devices.CreateSCSIController("lsilogic")
+	if err != nil {
+		return defaultSCSIControllerInstanceID
+	}
+	resources[defaultSCSIControllerInstanceID] = d
+	*devices = append(*devices, d)
+	return defaultSCSIControllerInstanceID
+}
+
 func (e Envelope) toVirtualDisk(
 	item itemElement,
 	devices object.VirtualDeviceList,
@@ -524,11 +693,7 @@ func (e Envelope) toVirtualDisk(
 			"types.BaseVirtualController", r)
 	}
 
-	d := devices.CreateDisk(c, types.ManagedObjectReference{}, "")
-
-	d.VirtualDevice.DeviceInfo = &types.Description{
-		Label: item.ElementName,
-	}
+	diskName := ""
 
 	// Find the disk's capacity.
 	var capacityInBytes uint64
@@ -549,6 +714,12 @@ func (e Envelope) toVirtualDisk(
 		dd := e.ovfDisk(diskID)
 		if dd == nil {
 			return nil, fmt.Errorf("missing diskID %q", diskID)
+		}
+
+		if dd.FileRef != nil &&
+			*dd.FileRef != "" {
+
+			diskName = *dd.FileRef
 		}
 
 		var allocUnitsSz string
@@ -572,6 +743,12 @@ func (e Envelope) toVirtualDisk(
 	if capacityInBytes > math.MaxInt64 {
 		return nil, fmt.Errorf(
 			"capacityInBytes=%d exceeds math.MaxInt64", capacityInBytes)
+	}
+
+	d := devices.CreateDisk(c, types.ManagedObjectReference{}, diskName)
+
+	d.VirtualDevice.DeviceInfo = &types.Description{
+		Label: item.ElementName,
 	}
 
 	d.CapacityInBytes = int64(capacityInBytes)

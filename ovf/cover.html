@@ -1,0 +1,3599 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>ovf: Go Coverage Report</title>
+		<style>
+			body {
+				background: black;
+				color: rgb(80, 80, 80);
+			}
+			body, pre, #legend span {
+				font-family: Menlo, monospace;
+				font-weight: bold;
+			}
+			#topbar {
+				background: black;
+				position: fixed;
+				top: 0; left: 0; right: 0;
+				height: 42px;
+				border-bottom: 1px solid rgb(80, 80, 80);
+			}
+			#content {
+				margin-top: 50px;
+			}
+			#nav, #legend {
+				float: left;
+				margin-left: 10px;
+			}
+			#legend {
+				margin-top: 12px;
+			}
+			#nav {
+				margin-top: 10px;
+			}
+			#legend span {
+				margin: 0 5px;
+			}
+			.cov0 { color: rgb(192, 0, 0) }
+.cov1 { color: rgb(128, 128, 128) }
+.cov2 { color: rgb(116, 140, 131) }
+.cov3 { color: rgb(104, 152, 134) }
+.cov4 { color: rgb(92, 164, 137) }
+.cov5 { color: rgb(80, 176, 140) }
+.cov6 { color: rgb(68, 188, 143) }
+.cov7 { color: rgb(56, 200, 146) }
+.cov8 { color: rgb(44, 212, 149) }
+.cov9 { color: rgb(32, 224, 152) }
+.cov10 { color: rgb(20, 236, 155) }
+
+		</style>
+	</head>
+	<body>
+		<div id="topbar">
+			<div id="nav">
+				<select id="files">
+				
+				<option value="file0">github.com/vmware/govmomi/ovf/cim.go (100.0%)</option>
+				
+				<option value="file1">github.com/vmware/govmomi/ovf/configspec.go (82.3%)</option>
+				
+				<option value="file2">github.com/vmware/govmomi/ovf/env.go (92.9%)</option>
+				
+				<option value="file3">github.com/vmware/govmomi/ovf/envelope.go (0.0%)</option>
+				
+				<option value="file4">github.com/vmware/govmomi/ovf/importer/archive.go (0.0%)</option>
+				
+				<option value="file5">github.com/vmware/govmomi/ovf/importer/importable.go (0.0%)</option>
+				
+				<option value="file6">github.com/vmware/govmomi/ovf/importer/importer.go (2.2%)</option>
+				
+				<option value="file7">github.com/vmware/govmomi/ovf/importer/options.go (88.9%)</option>
+				
+				<option value="file8">github.com/vmware/govmomi/ovf/importer/spec.go (0.0%)</option>
+				
+				<option value="file9">github.com/vmware/govmomi/ovf/manager.go (0.0%)</option>
+				
+				<option value="file10">github.com/vmware/govmomi/ovf/ovf.go (71.4%)</option>
+				
+				<option value="file11">github.com/vmware/govmomi/ovf/parser.go (95.2%)</option>
+				
+				</select>
+			</div>
+			<div id="legend">
+				<span>not tracked</span>
+			
+				<span class="cov0">not covered</span>
+				<span class="cov8">covered</span>
+			
+			</div>
+		</div>
+		<div id="content">
+		
+		<pre class="file" id="file0" style="display: none">// © Broadcom. All Rights Reserved.
+// The term "Broadcom" refers to Broadcom Inc. and/or its subsidiaries.
+// SPDX-License-Identifier: Apache-2.0
+
+package ovf
+
+import (
+        "github.com/vmware/govmomi/vim25/types"
+)
+
+/*
+Source:
+  - https://schemas.dmtf.org/wbem/wscim/1/cim-schema/2.24.0/CIM_ResourceAllocationSettingData.xsd
+  - https://schemas.dmtf.org/wbem/cim-html/2/CIM_ResourceAllocationSettingData.html
+*/
+type CIMResourceType uint16
+
+// Please note, the iota pattern is not used to ensure these constants remain
+// affixed to an explicit value.
+const (
+        Other              CIMResourceType = 1
+        ComputerSystem     CIMResourceType = 2
+        Processor          CIMResourceType = 3
+        Memory             CIMResourceType = 4
+        IdeController      CIMResourceType = 5
+        ParallelScsiHba    CIMResourceType = 6
+        FcHba              CIMResourceType = 7
+        IScsiHba           CIMResourceType = 8
+        IbHba              CIMResourceType = 9
+        EthernetAdapter    CIMResourceType = 10
+        OtherNetwork       CIMResourceType = 11
+        IoSlot             CIMResourceType = 12
+        IoDevice           CIMResourceType = 13
+        FloppyDrive        CIMResourceType = 14
+        CdDrive            CIMResourceType = 15
+        DvdDrive           CIMResourceType = 16
+        DiskDrive          CIMResourceType = 17
+        TapeDrive          CIMResourceType = 18
+        StorageExtent      CIMResourceType = 19
+        OtherStorage       CIMResourceType = 20
+        SerialPort         CIMResourceType = 21
+        ParallelPort       CIMResourceType = 22
+        UsbController      CIMResourceType = 23
+        Graphics           CIMResourceType = 24
+        Ieee1394           CIMResourceType = 25
+        PartitionableUnit  CIMResourceType = 26
+        BasePartitionable  CIMResourceType = 27
+        PowerSupply        CIMResourceType = 28
+        CoolingDevice      CIMResourceType = 29
+        EthernetSwitchPort CIMResourceType = 30
+        LogicalDisk        CIMResourceType = 31
+        StorageVolume      CIMResourceType = 32
+        EthernetConnection CIMResourceType = 33
+)
+
+/*
+Source: http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2.24.0/CIM_VirtualSystemSettingData.xsd
+*/
+
+type CIMVirtualSystemSettingData struct {
+        ElementName string `xml:"ElementName" json:"elementName"`
+        InstanceID  string `xml:"InstanceID" json:"instanceID"`
+
+        AutomaticRecoveryAction              *uint8   `xml:"AutomaticRecoveryAction" json:"automaticRecoveryAction,omitempty"`
+        AutomaticShutdownAction              *uint8   `xml:"AutomaticShutdownAction" json:"automaticShutdownAction,omitempty"`
+        AutomaticStartupAction               *uint8   `xml:"AutomaticStartupAction" json:"automaticStartupAction,omitempty"`
+        AutomaticStartupActionDelay          *string  `xml:"AutomaticStartupActionDelay&gt;Interval" json:"automaticStartupActionDelay,omitempty"`
+        AutomaticStartupActionSequenceNumber *uint16  `xml:"AutomaticStartupActionSequenceNumber" json:"automaticStartupActionSequenceNumber,omitempty"`
+        Caption                              *string  `xml:"Caption" json:"caption,omitempty"`
+        ConfigurationDataRoot                *string  `xml:"ConfigurationDataRoot" json:"configurationDataRoot,omitempty"`
+        ConfigurationFile                    *string  `xml:"ConfigurationFile" json:"configurationFile,omitempty"`
+        ConfigurationID                      *string  `xml:"ConfigurationID" json:"configurationID,omitempty"`
+        CreationTime                         *string  `xml:"CreationTime" json:"creationTime,omitempty"`
+        Description                          *string  `xml:"Description" json:"description,omitempty"`
+        LogDataRoot                          *string  `xml:"LogDataRoot" json:"logDataRoot,omitempty"`
+        Notes                                []string `xml:"Notes" json:"notes,omitempty"`
+        RecoveryFile                         *string  `xml:"RecoveryFile" json:"recoveryFile,omitempty"`
+        SnapshotDataRoot                     *string  `xml:"SnapshotDataRoot" json:"snapshotDataRoot,omitempty"`
+        SuspendDataRoot                      *string  `xml:"SuspendDataRoot" json:"suspendDataRoot,omitempty"`
+        SwapFileDataRoot                     *string  `xml:"SwapFileDataRoot" json:"swapFileDataRoot,omitempty"`
+        VirtualSystemIdentifier              *string  `xml:"VirtualSystemIdentifier" json:"virtualSystemIdentifier,omitempty"`
+        VirtualSystemType                    *string  `xml:"VirtualSystemType" json:"virtualSystemType,omitempty"`
+}
+
+/*
+Source: http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2.24.0/CIM_ResourceAllocationSettingData.xsd
+*/
+
+type CIMResourceAllocationSettingData struct {
+        ElementName string `xml:"ElementName" json:"elementName,omitempty"`
+        InstanceID  string `xml:"InstanceID" json:"instanceID,omitempty"`
+
+        ResourceType      *CIMResourceType `xml:"ResourceType" json:"resourceType,omitempty"`
+        OtherResourceType *string          `xml:"OtherResourceType" json:"otherResourceType,omitempty"`
+        ResourceSubType   *string          `xml:"ResourceSubType" json:"resourceSubType,omitempty"`
+
+        AddressOnParent       *string  `xml:"AddressOnParent" json:"addressOnParent,omitempty"`
+        Address               *string  `xml:"Address" json:"address,omitempty"`
+        AllocationUnits       *string  `xml:"AllocationUnits" json:"allocationUnits,omitempty"`
+        AutomaticAllocation   *bool    `xml:"AutomaticAllocation" json:"automaticAllocation,omitempty"`
+        AutomaticDeallocation *bool    `xml:"AutomaticDeallocation" json:"automaticDeallocation,omitempty"`
+        Caption               *string  `xml:"Caption" json:"caption,omitempty"`
+        Connection            []string `xml:"Connection" json:"connection,omitempty"`
+        ConsumerVisibility    *uint16  `xml:"ConsumerVisibility" json:"consumerVisibility,omitempty"`
+        Description           *string  `xml:"Description" json:"description,omitempty"`
+        HostResource          []string `xml:"HostResource" json:"hostResource,omitempty"`
+        Limit                 *uint64  `xml:"Limit" json:"limit,omitempty"`
+        MappingBehavior       *uint    `xml:"MappingBehavior" json:"mappingBehavior,omitempty"`
+        Parent                *string  `xml:"Parent" json:"parent,omitempty"`
+        PoolID                *string  `xml:"PoolID" json:"poolID,omitempty"`
+        Reservation           *uint64  `xml:"Reservation" json:"reservation,omitempty"`
+        VirtualQuantity       *uint    `xml:"VirtualQuantity" json:"virtualQuantity,omitempty"`
+        VirtualQuantityUnits  *string  `xml:"VirtualQuantityUnits" json:"virtualQuantityUnits,omitempty"`
+        Weight                *uint    `xml:"Weight" json:"weight,omitempty"`
+}
+
+/*
+Source: http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_EthernetPortAllocationSettingData.xsd
+CIM_EthernetPortAllocationSettingData describes Ethernet port (NIC) allocation.
+*/
+type CIMEthernetPortAllocationSettingData struct {
+        ElementName string `xml:"ElementName" json:"elementName,omitempty"`
+        InstanceID  string `xml:"InstanceID" json:"instanceID,omitempty"`
+
+        ResourceType      *CIMResourceType `xml:"ResourceType" json:"resourceType,omitempty"`
+        OtherResourceType *string          `xml:"OtherResourceType" json:"otherResourceType,omitempty"`
+        ResourceSubType   *string          `xml:"ResourceSubType" json:"resourceSubType,omitempty"`
+
+        Address               *string  `xml:"Address" json:"address,omitempty"`
+        AddressOnParent       *string  `xml:"AddressOnParent" json:"addressOnParent,omitempty"`
+        AllocationUnits       *string  `xml:"AllocationUnits" json:"allocationUnits,omitempty"`
+        AutomaticAllocation   *bool    `xml:"AutomaticAllocation" json:"automaticAllocation,omitempty"`
+        AutomaticDeallocation *bool    `xml:"AutomaticDeallocation" json:"automaticDeallocation,omitempty"`
+        Connection            []string `xml:"Connection" json:"connection,omitempty"`
+        Description           *string  `xml:"Description" json:"description,omitempty"`
+        VirtualQuantity       *uint    `xml:"VirtualQuantity" json:"virtualQuantity,omitempty"`
+        VirtualQuantityUnits  *string  `xml:"VirtualQuantityUnits" json:"virtualQuantityUnits,omitempty"`
+}
+
+/*
+Source: http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2.24.0/CIM_StorageAllocationSettingData.xsd
+*/
+type CIMStorageAllocationSettingData struct {
+        ElementName string `xml:"ElementName" json:"elementName"`
+        InstanceID  string `xml:"InstanceID" json:"instanceID"`
+
+        ResourceType      *CIMResourceType `xml:"ResourceType" json:"resourceType,omitempty"`
+        OtherResourceType *string          `xml:"OtherResourceType" json:"otherResourceType,omitempty"`
+        ResourceSubType   *string          `xml:"ResourceSubType" json:"resourceSubType,omitempty"`
+
+        Access                       *uint16         `xml:"Access" json:"access,omitempty"`
+        Address                      *string         `xml:"Address" json:"address,omitempty"`
+        AddressOnParent              *string         `xml:"AddressOnParent" json:"addressOnParent,omitempty"`
+        AllocationUnits              *string         `xml:"AllocationUnits" json:"allocationUnits,omitempty"`
+        AutomaticAllocation          *bool           `xml:"AutomaticAllocation" json:"automaticAllocation,omitempty"`
+        AutomaticDeallocation        *bool           `xml:"AutomaticDeallocation" json:"automaticDeallocation,omitempty"`
+        Caption                      *string         `xml:"Caption" json:"caption,omitempty"`
+        ChangeableType               *uint16         `xml:"ChangeableType" json:"changeableType,omitempty"`
+        ComponentSetting             []types.AnyType `xml:"ComponentSetting" json:"componentSetting,omitempty"`
+        ConfigurationName            *string         `xml:"ConfigurationName" json:"configurationName,omitempty"`
+        Connection                   []string        `xml:"Connection" json:"connection,omitempty"`
+        ConsumerVisibility           *uint16         `xml:"ConsumerVisibility" json:"consumerVisibility,omitempty"`
+        Description                  *string         `xml:"Description" json:"description,omitempty"`
+        Generation                   *uint64         `xml:"Generation" json:"generation,omitempty"`
+        HostExtentName               *string         `xml:"HostExtentName" json:"hostExtentName,omitempty"`
+        HostExtentNameFormat         *uint16         `xml:"HostExtentNameFormat" json:"hostExtentNameFormat,omitempty"`
+        HostExtentNameNamespace      *uint16         `xml:"HostExtentNameNamespace" json:"hostExtentNameNamespace,omitempty"`
+        HostExtentStartingAddress    *uint64         `xml:"HostExtentStartingAddress" json:"hostExtentStartingAddress,omitempty"`
+        HostResource                 []string        `xml:"HostResource" json:"hostResource,omitempty"`
+        HostResourceBlockSize        *uint64         `xml:"HostResourceBlockSize" json:"hostResourceBlockSize,omitempty"`
+        Limit                        *uint64         `xml:"Limit" json:"limit,omitempty"`
+        MappingBehavior              *uint           `xml:"MappingBehavior" json:"mappingBehavior,omitempty"`
+        OtherHostExtentNameFormat    *string         `xml:"OtherHostExtentNameFormat" json:"otherHostExtentNameFormat,omitempty"`
+        OtherHostExtentNameNamespace *string         `xml:"OtherHostExtentNameNamespace" json:"otherHostExtentNameNamespace,omitempty"`
+        Parent                       *string         `xml:"Parent" json:"parent,omitempty"`
+        PoolID                       *string         `xml:"PoolID" json:"poolID,omitempty"`
+        Reservation                  *uint64         `xml:"Reservation" json:"reservation,omitempty"`
+        SoID                         *string         `xml:"SoID" json:"soID,omitempty"`
+        SoOrgID                      *string         `xml:"SoOrgID" json:"soOrgID,omitempty"`
+        VirtualQuantity              *uint           `xml:"VirtualQuantity" json:"virtualQuantity,omitempty"`
+        VirtualQuantityUnits         *string         `xml:"VirtualQuantityUnits" json:"virtualQuantityUnits,omitempty"`
+        VirtualResourceBlockSize     *uint64         `xml:"VirtualResourceBlockSize" json:"virtualResourceBlockSize,omitempty"`
+        Weight                       *uint           `xml:"Weight" json:"weight,omitempty"`
+}
+
+// CIMOSType represents the CIM (Common Information Model) OSType enumeration
+// values. These values are defined by the DMTF CIM schema and used in various
+// management standards. Please refer to the following URL for more information:
+// https://learn.microsoft.com/en-us/windows/win32/cimwin32prov/cim-operatingsystem
+type CIMOSType int
+
+const (
+        CIMOSTypeUnknown                          CIMOSType = 0
+        CIMOSTypeOther                            CIMOSType = 1
+        CIMOSTypeMACOS                            CIMOSType = 2
+        CIMOSTypeATTUNIX                          CIMOSType = 3
+        CIMOSTypeDGUX                             CIMOSType = 4
+        CIMOSTypeDECNT                            CIMOSType = 5
+        CIMOSTypeTru64UNIX                        CIMOSType = 6
+        CIMOSTypeOpenVMS                          CIMOSType = 7
+        CIMOSTypeHPUX                             CIMOSType = 8
+        CIMOSTypeAIX                              CIMOSType = 9
+        CIMOSTypeMVS                              CIMOSType = 10
+        CIMOSTypeOS400                            CIMOSType = 11
+        CIMOSTypeOS2                              CIMOSType = 12
+        CIMOSTypeJavaMachine                      CIMOSType = 13
+        CIMOSTypeMSDOS                            CIMOSType = 14
+        CIMOSTypeWIN3x                            CIMOSType = 15
+        CIMOSTypeWIN95                            CIMOSType = 16
+        CIMOSTypeWIN98                            CIMOSType = 17
+        CIMOSTypeWINNT                            CIMOSType = 18
+        CIMOSTypeWINCE                            CIMOSType = 19
+        CIMOSTypeNCR3000                          CIMOSType = 20
+        CIMOSTypeNetWare                          CIMOSType = 21
+        CIMOSTypeOSF                              CIMOSType = 22
+        CIMOSTypeDCOS                             CIMOSType = 23
+        CIMOSTypeReliantUNIX                      CIMOSType = 24
+        CIMOSTypeSCOUnixWare                      CIMOSType = 25
+        CIMOSTypeSCOOpenServer                    CIMOSType = 26
+        CIMOSTypeSequent                          CIMOSType = 27
+        CIMOSTypeIRIX                             CIMOSType = 28
+        CIMOSTypeSolaris                          CIMOSType = 29
+        CIMOSTypeSunOS                            CIMOSType = 30
+        CIMOSTypeU6000                            CIMOSType = 31
+        CIMOSTypeASERIES                          CIMOSType = 32
+        CIMOSTypeTandemNSK                        CIMOSType = 33
+        CIMOSTypeTandemNT                         CIMOSType = 34
+        CIMOSTypeBS2000                           CIMOSType = 35
+        CIMOSTypeLINUX                            CIMOSType = 36
+        CIMOSTypeLynx                             CIMOSType = 37
+        CIMOSTypeXENIX                            CIMOSType = 38
+        CIMOSTypeVMESA                            CIMOSType = 39
+        CIMOSTypeInteractive                      CIMOSType = 40
+        CIMOSTypeBSDUNIX                          CIMOSType = 41
+        CIMOSTypeFreeBSD                          CIMOSType = 42
+        CIMOSTypeNetBSD                           CIMOSType = 43
+        CIMOSTypeGNUHurd                          CIMOSType = 44
+        CIMOSTypeOS9                              CIMOSType = 45
+        CIMOSTypeMACHKernel                       CIMOSType = 46
+        CIMOSTypeInferno                          CIMOSType = 47
+        CIMOSTypeQNX                              CIMOSType = 48
+        CIMOSTypeEPOC                             CIMOSType = 49
+        CIMOSTypeIXWorks                          CIMOSType = 50
+        CIMOSTypeVxWorks                          CIMOSType = 51
+        CIMOSTypeMiNT                             CIMOSType = 52
+        CIMOSTypeBeOS                             CIMOSType = 53
+        CIMOSTypeHPMPE                            CIMOSType = 54
+        CIMOSTypeNextStep                         CIMOSType = 55
+        CIMOSTypePalmPilot                        CIMOSType = 56
+        CIMOSTypeRhapsody                         CIMOSType = 57
+        CIMOSTypeWindows2000                      CIMOSType = 58
+        CIMOSTypeDedicated                        CIMOSType = 59
+        CIMOSTypeOS390                            CIMOSType = 60
+        CIMOSTypeVSE                              CIMOSType = 61
+        CIMOSTypeTPF                              CIMOSType = 62
+        CIMOSTypeWindowsMe                        CIMOSType = 63
+        CIMOSTypeCalderaOpenUNIX                  CIMOSType = 64
+        CIMOSTypeOpenBSD                          CIMOSType = 65
+        CIMOSTypeNotApplicable                    CIMOSType = 66
+        CIMOSTypeWindowsXP                        CIMOSType = 67
+        CIMOSTypezOS                              CIMOSType = 68
+        CIMOSTypeMicrosoftWindowsServer2003       CIMOSType = 69
+        CIMOSTypeMicrosoftWindowsServer2003_64Bit CIMOSType = 70
+        CIMOSTypeWindowsXP64Bit                   CIMOSType = 71
+        CIMOSTypeWindowsXPEmbedded                CIMOSType = 72
+        CIMOSTypeWindowsVista                     CIMOSType = 73
+        CIMOSTypeWindowsVista64Bit                CIMOSType = 74
+        CIMOSTypeWindowsEmbeddedforPointofService CIMOSType = 75
+        CIMOSTypeMicrosoftWindowsServer2008       CIMOSType = 76
+        CIMOSTypeMicrosoftWindowsServer2008_64Bit CIMOSType = 77
+        CIMOSTypeFreeBSD64Bit                     CIMOSType = 78
+        CIMOSTypeRedHatEnterpriseLinux            CIMOSType = 79
+        CIMOSTypeRedHatEnterpriseLinux64Bit       CIMOSType = 80
+        CIMOSTypeSolaris64Bit                     CIMOSType = 81
+        CIMOSTypeSUSE                             CIMOSType = 82
+        CIMOSTypeSUSE64Bit                        CIMOSType = 83
+        CIMOSTypeSLES                             CIMOSType = 84
+        CIMOSTypeSLES64Bit                        CIMOSType = 85
+        CIMOSTypeNovellOES                        CIMOSType = 86
+        CIMOSTypeNovellLinuxDesktop               CIMOSType = 87
+        CIMOSTypeSunJavaDesktopSystem             CIMOSType = 88
+        CIMOSTypeMandriva                         CIMOSType = 89
+        CIMOSTypeMandriva64Bit                    CIMOSType = 90
+        CIMOSTypeTurboLinux                       CIMOSType = 91
+        CIMOSTypeTurboLinux64Bit                  CIMOSType = 92
+        CIMOSTypeUbuntu                           CIMOSType = 93
+        CIMOSTypeUbuntu64Bit                      CIMOSType = 94
+        CIMOSTypeDebian                           CIMOSType = 95
+        CIMOSTypeDebian64Bit                      CIMOSType = 96
+        CIMOSTypeLinux24x                         CIMOSType = 97
+        CIMOSTypeLinux24x64Bit                    CIMOSType = 98
+        CIMOSTypeLinux26x                         CIMOSType = 99
+        CIMOSTypeLinux26x64Bit                    CIMOSType = 100
+        CIMOSTypeLinux64Bit                       CIMOSType = 101
+        CIMOSTypeOther64Bit                       CIMOSType = 102
+        CIMOSTypeMicrosoftWindowsServer2008R2     CIMOSType = 103
+        CIMOSTypeVMwareESXi                       CIMOSType = 104
+        CIMOSTypeMicrosoftWindows7                CIMOSType = 105
+        CIMOSTypeCentOS32bit                      CIMOSType = 106
+        CIMOSTypeCentOS64bit                      CIMOSType = 107
+        CIMOSTypeOracle32bit                      CIMOSType = 108
+        CIMOSTypeOracle64bit                      CIMOSType = 109
+        CIMOSTypeeComStation32bitx                CIMOSType = 110
+        CIMOSTypeMicrosoftWindowsServer2011       CIMOSType = 111
+        CIMOSTypeMicrosoftWindowsServer2012       CIMOSType = 112
+        CIMOSTypeMicrosoftWindows8                CIMOSType = 113
+        CIMOSTypeMicrosoftWindows81               CIMOSType = 114
+        CIMOSTypeMicrosoftWindowsServer2012R2     CIMOSType = 115
+)
+
+// GuestIDToCIMOSType translates a vSphere Guest OS identifier to a CIM
+// OSType value.
+func GuestIDToCIMOSType[T ~string](guestID T) CIMOSType <span class="cov8" title="1">{
+        switch types.VirtualMachineGuestOsIdentifier(guestID) </span>{
+        // Windows Desktop
+        case types.VirtualMachineGuestOsIdentifierDosGuest:<span class="cov8" title="1">
+                return CIMOSTypeMSDOS</span>
+        case types.VirtualMachineGuestOsIdentifierWin31Guest:<span class="cov8" title="1">
+                return CIMOSTypeWIN3x</span>
+        case types.VirtualMachineGuestOsIdentifierWin95Guest:<span class="cov8" title="1">
+                return CIMOSTypeWIN95</span>
+        case types.VirtualMachineGuestOsIdentifierWin98Guest:<span class="cov8" title="1">
+                return CIMOSTypeWIN98</span>
+        case types.VirtualMachineGuestOsIdentifierWinMeGuest:<span class="cov8" title="1">
+                return CIMOSTypeWindowsMe</span>
+        case types.VirtualMachineGuestOsIdentifierWinNTGuest:<span class="cov8" title="1">
+                return CIMOSTypeWINNT</span>
+        case types.VirtualMachineGuestOsIdentifierWin2000ProGuest:<span class="cov8" title="1">
+                return CIMOSTypeWindows2000</span>
+        case types.VirtualMachineGuestOsIdentifierWin2000ServGuest:<span class="cov8" title="1">
+                return CIMOSTypeWindows2000</span>
+        case types.VirtualMachineGuestOsIdentifierWin2000AdvServGuest:<span class="cov8" title="1">
+                return CIMOSTypeWindows2000</span>
+        case types.VirtualMachineGuestOsIdentifierWinXPHomeGuest:<span class="cov8" title="1">
+                return CIMOSTypeWindowsXP</span>
+        case types.VirtualMachineGuestOsIdentifierWinXPProGuest:<span class="cov8" title="1">
+                return CIMOSTypeWindowsXP</span>
+        case types.VirtualMachineGuestOsIdentifierWinXPPro64Guest:<span class="cov8" title="1">
+                return CIMOSTypeWindowsXP64Bit</span>
+        case types.VirtualMachineGuestOsIdentifierWinVistaGuest:<span class="cov8" title="1">
+                return CIMOSTypeWindowsVista</span>
+        case types.VirtualMachineGuestOsIdentifierWinVista64Guest:<span class="cov8" title="1">
+                return CIMOSTypeWindowsVista64Bit</span>
+        case types.VirtualMachineGuestOsIdentifierWindows7Guest:<span class="cov8" title="1">
+                return CIMOSTypeMicrosoftWindows7</span>
+        case types.VirtualMachineGuestOsIdentifierWindows7_64Guest:<span class="cov8" title="1">
+                return CIMOSTypeMicrosoftWindows7</span>
+        case types.VirtualMachineGuestOsIdentifierWindows8Guest:<span class="cov8" title="1">
+                return CIMOSTypeMicrosoftWindows8</span>
+        case types.VirtualMachineGuestOsIdentifierWindows8_64Guest:<span class="cov8" title="1">
+                return CIMOSTypeMicrosoftWindows8</span>
+        // TODO(akutz) The following guest IDs do not exist.
+        /*
+                case types.VirtualMachineGuestOsIdentifierWindows81Guest:
+                        return CIMOSTypeMicrosoftWindows81
+                case types.VirtualMachineGuestOsIdentifierWindows81_64Guest:
+                        return CIMOSTypeMicrosoftWindows81
+        */
+        case types.VirtualMachineGuestOsIdentifierWindows9Guest:<span class="cov8" title="1">
+                return CIMOSTypeOther</span> // Windows 10/11 - no specific CIM type
+        case types.VirtualMachineGuestOsIdentifierWindows9_64Guest:<span class="cov8" title="1">
+                return CIMOSTypeOther64Bit</span>
+        case types.VirtualMachineGuestOsIdentifierWindows11_64Guest:<span class="cov8" title="1">
+                return CIMOSTypeOther64Bit</span>
+        case types.VirtualMachineGuestOsIdentifierWindows12_64Guest:<span class="cov8" title="1">
+                return CIMOSTypeOther64Bit</span>
+        case types.VirtualMachineGuestOsIdentifierWindowsHyperVGuest:<span class="cov8" title="1">
+                return CIMOSTypeOther64Bit</span>
+
+        // Windows Server
+        case types.VirtualMachineGuestOsIdentifierWinNetEnterpriseGuest:<span class="cov8" title="1">
+                return CIMOSTypeMicrosoftWindowsServer2003</span>
+        case types.VirtualMachineGuestOsIdentifierWinNetDatacenterGuest:<span class="cov8" title="1">
+                return CIMOSTypeMicrosoftWindowsServer2003</span>
+        case types.VirtualMachineGuestOsIdentifierWinNetBusinessGuest:<span class="cov8" title="1">
+                return CIMOSTypeMicrosoftWindowsServer2003</span>
+        case types.VirtualMachineGuestOsIdentifierWinNetStandardGuest:<span class="cov8" title="1">
+                return CIMOSTypeMicrosoftWindowsServer2003</span>
+        case types.VirtualMachineGuestOsIdentifierWinNetWebGuest:<span class="cov8" title="1">
+                return CIMOSTypeMicrosoftWindowsServer2003</span>
+        case types.VirtualMachineGuestOsIdentifierWinNetEnterprise64Guest:<span class="cov8" title="1">
+                return CIMOSTypeMicrosoftWindowsServer2003_64Bit</span>
+        case types.VirtualMachineGuestOsIdentifierWinNetDatacenter64Guest:<span class="cov8" title="1">
+                return CIMOSTypeMicrosoftWindowsServer2003_64Bit</span>
+        case types.VirtualMachineGuestOsIdentifierWinNetStandard64Guest:<span class="cov8" title="1">
+                return CIMOSTypeMicrosoftWindowsServer2003_64Bit</span>
+        case types.VirtualMachineGuestOsIdentifierWinLonghornGuest:<span class="cov8" title="1">
+                return CIMOSTypeMicrosoftWindowsServer2008</span>
+        case types.VirtualMachineGuestOsIdentifierWinLonghorn64Guest:<span class="cov8" title="1">
+                return CIMOSTypeMicrosoftWindowsServer2008_64Bit</span>
+        case types.VirtualMachineGuestOsIdentifierWindows7Server64Guest:<span class="cov8" title="1">
+                return CIMOSTypeMicrosoftWindowsServer2008R2</span>
+        case types.VirtualMachineGuestOsIdentifierWindows8Server64Guest:<span class="cov8" title="1">
+                return CIMOSTypeMicrosoftWindowsServer2012</span>
+        case types.VirtualMachineGuestOsIdentifierWindows9Server64Guest:<span class="cov8" title="1">
+                return CIMOSTypeMicrosoftWindowsServer2012R2</span>
+        case types.VirtualMachineGuestOsIdentifierWindows2019srv_64Guest:<span class="cov8" title="1">
+                return CIMOSTypeOther64Bit</span> // No specific CIM type for 2019+
+        case types.VirtualMachineGuestOsIdentifierWindows2019srvNext_64Guest:<span class="cov8" title="1">
+                return CIMOSTypeOther64Bit</span>
+        case types.VirtualMachineGuestOsIdentifierWindows2022srvNext_64Guest:<span class="cov8" title="1">
+                return CIMOSTypeOther64Bit</span>
+
+        // Linux
+        case types.VirtualMachineGuestOsIdentifierAsianux3Guest:<span class="cov8" title="1">
+                return CIMOSTypeLINUX</span>
+        case types.VirtualMachineGuestOsIdentifierAsianux3_64Guest:<span class="cov8" title="1">
+                return CIMOSTypeLinux64Bit</span>
+        case types.VirtualMachineGuestOsIdentifierAsianux4Guest:<span class="cov8" title="1">
+                return CIMOSTypeLINUX</span>
+        case types.VirtualMachineGuestOsIdentifierAsianux4_64Guest:<span class="cov8" title="1">
+                return CIMOSTypeLinux64Bit</span>
+        case types.VirtualMachineGuestOsIdentifierAsianux5_64Guest:<span class="cov8" title="1">
+                return CIMOSTypeLinux64Bit</span>
+        case types.VirtualMachineGuestOsIdentifierAsianux7_64Guest:<span class="cov8" title="1">
+                return CIMOSTypeLinux64Bit</span>
+        case types.VirtualMachineGuestOsIdentifierAsianux8_64Guest:<span class="cov8" title="1">
+                return CIMOSTypeLinux64Bit</span>
+        case types.VirtualMachineGuestOsIdentifierAsianux9_64Guest:<span class="cov8" title="1">
+                return CIMOSTypeLinux64Bit</span>
+        case types.VirtualMachineGuestOsIdentifierCentos6Guest:<span class="cov8" title="1">
+                return CIMOSTypeCentOS32bit</span>
+        case types.VirtualMachineGuestOsIdentifierCentos6_64Guest:<span class="cov8" title="1">
+                return CIMOSTypeCentOS64bit</span>
+        case types.VirtualMachineGuestOsIdentifierCentos7Guest:<span class="cov8" title="1">
+                return CIMOSTypeCentOS32bit</span>
+        case types.VirtualMachineGuestOsIdentifierCentos7_64Guest:<span class="cov8" title="1">
+                return CIMOSTypeCentOS64bit</span>
+        case types.VirtualMachineGuestOsIdentifierCentos8_64Guest:<span class="cov8" title="1">
+                return CIMOSTypeCentOS64bit</span>
+        case types.VirtualMachineGuestOsIdentifierCentos9_64Guest:<span class="cov8" title="1">
+                return CIMOSTypeCentOS64bit</span>
+        case types.VirtualMachineGuestOsIdentifierCoreos64Guest:<span class="cov8" title="1">
+                return CIMOSTypeLinux64Bit</span>
+        case types.VirtualMachineGuestOsIdentifierDebian4Guest:<span class="cov8" title="1">
+                return CIMOSTypeDebian</span>
+        case types.VirtualMachineGuestOsIdentifierDebian4_64Guest:<span class="cov8" title="1">
+                return CIMOSTypeDebian64Bit</span>
+        case types.VirtualMachineGuestOsIdentifierDebian5Guest:<span class="cov8" title="1">
+                return CIMOSTypeDebian</span>
+        case types.VirtualMachineGuestOsIdentifierDebian5_64Guest:<span class="cov8" title="1">
+                return CIMOSTypeDebian64Bit</span>
+        case types.VirtualMachineGuestOsIdentifierDebian6Guest:<span class="cov8" title="1">
+                return CIMOSTypeDebian</span>
+        case types.VirtualMachineGuestOsIdentifierDebian6_64Guest:<span class="cov8" title="1">
+                return CIMOSTypeDebian64Bit</span>
+        case types.VirtualMachineGuestOsIdentifierDebian7Guest:<span class="cov8" title="1">
+                return CIMOSTypeDebian</span>
+        case types.VirtualMachineGuestOsIdentifierDebian7_64Guest:<span class="cov8" title="1">
+                return CIMOSTypeDebian64Bit</span>
+        case types.VirtualMachineGuestOsIdentifierDebian8Guest:<span class="cov8" title="1">
+                return CIMOSTypeDebian</span>
+        case types.VirtualMachineGuestOsIdentifierDebian8_64Guest:<span class="cov8" title="1">
+                return CIMOSTypeDebian64Bit</span>
+        case types.VirtualMachineGuestOsIdentifierDebian9Guest:<span class="cov8" title="1">
+                return CIMOSTypeDebian</span>
+        case types.VirtualMachineGuestOsIdentifierDebian9_64Guest:<span class="cov8" title="1">
+                return CIMOSTypeDebian64Bit</span>
+        case types.VirtualMachineGuestOsIdentifierDebian10Guest:<span class="cov8" title="1">
+                return CIMOSTypeDebian</span>
+        case types.VirtualMachineGuestOsIdentifierDebian10_64Guest:<span class="cov8" title="1">
+                return CIMOSTypeDebian64Bit</span>
+        case types.VirtualMachineGuestOsIdentifierDebian11Guest:<span class="cov8" title="1">
+                return CIMOSTypeDebian</span>
+        case types.VirtualMachineGuestOsIdentifierDebian11_64Guest:<span class="cov8" title="1">
+                return CIMOSTypeDebian64Bit</span>
+        case types.VirtualMachineGuestOsIdentifierDebian12Guest:<span class="cov8" title="1">
+                return CIMOSTypeDebian</span>
+        case types.VirtualMachineGuestOsIdentifierDebian12_64Guest:<span class="cov8" title="1">
+                return CIMOSTypeDebian64Bit</span>
+        case types.VirtualMachineGuestOsIdentifierFedoraGuest:<span class="cov8" title="1">
+                return CIMOSTypeLINUX</span>
+        case types.VirtualMachineGuestOsIdentifierFedora64Guest:<span class="cov8" title="1">
+                return CIMOSTypeLinux64Bit</span>
+        case types.VirtualMachineGuestOsIdentifierFreebsd11Guest:<span class="cov8" title="1">
+                return CIMOSTypeFreeBSD</span>
+        case types.VirtualMachineGuestOsIdentifierFreebsd11_64Guest:<span class="cov8" title="1">
+                return CIMOSTypeFreeBSD64Bit</span>
+        case types.VirtualMachineGuestOsIdentifierFreebsd12Guest:<span class="cov8" title="1">
+                return CIMOSTypeFreeBSD</span>
+        case types.VirtualMachineGuestOsIdentifierFreebsd12_64Guest:<span class="cov8" title="1">
+                return CIMOSTypeFreeBSD64Bit</span>
+        case types.VirtualMachineGuestOsIdentifierFreebsd13Guest:<span class="cov8" title="1">
+                return CIMOSTypeFreeBSD</span>
+        case types.VirtualMachineGuestOsIdentifierFreebsd13_64Guest:<span class="cov8" title="1">
+                return CIMOSTypeFreeBSD64Bit</span>
+        case types.VirtualMachineGuestOsIdentifierFreebsd14Guest:<span class="cov8" title="1">
+                return CIMOSTypeFreeBSD</span>
+        case types.VirtualMachineGuestOsIdentifierFreebsd14_64Guest:<span class="cov8" title="1">
+                return CIMOSTypeFreeBSD64Bit</span>
+        case types.VirtualMachineGuestOsIdentifierFreebsdGuest:<span class="cov8" title="1">
+                return CIMOSTypeFreeBSD</span>
+        case types.VirtualMachineGuestOsIdentifierFreebsd64Guest:<span class="cov8" title="1">
+                return CIMOSTypeFreeBSD64Bit</span>
+        case types.VirtualMachineGuestOsIdentifierGenericLinuxGuest:<span class="cov8" title="1">
+                return CIMOSTypeLINUX</span>
+        case types.VirtualMachineGuestOsIdentifierMandrakeGuest:<span class="cov8" title="1">
+                return CIMOSTypeMandriva</span>
+        case types.VirtualMachineGuestOsIdentifierMandriva64Guest:<span class="cov8" title="1">
+                return CIMOSTypeMandriva64Bit</span>
+        case types.VirtualMachineGuestOsIdentifierMandrivaGuest:<span class="cov8" title="1">
+                return CIMOSTypeMandriva</span>
+        // TODO(akutz) The following guest IDs do not exist.
+        /*
+                case types.VirtualMachineGuestOsIdentifierNetbsd7Guest:
+                        return CIMOSTypeNetBSD
+                case types.VirtualMachineGuestOsIdentifierNetbsd7_64Guest:
+                        return CIMOSTypeNetBSD
+                case types.VirtualMachineGuestOsIdentifierNetbsd8Guest:
+                        return CIMOSTypeNetBSD
+                case types.VirtualMachineGuestOsIdentifierNetbsd8_64Guest:
+                        return CIMOSTypeNetBSD
+                case types.VirtualMachineGuestOsIdentifierNetbsd9Guest:
+                        return CIMOSTypeNetBSD
+                case types.VirtualMachineGuestOsIdentifierNetbsd9_64Guest:
+                        return CIMOSTypeNetBSD
+                case types.VirtualMachineGuestOsIdentifierOpenbsd7Guest:
+                        return CIMOSTypeOpenBSD
+                case types.VirtualMachineGuestOsIdentifierOpenbsd7_64Guest:
+                        return CIMOSTypeOpenBSD
+                case types.VirtualMachineGuestOsIdentifierOpenbsd8Guest:
+                        return CIMOSTypeOpenBSD
+                case types.VirtualMachineGuestOsIdentifierOpenbsd8_64Guest:
+                        return CIMOSTypeOpenBSD
+        */
+        case types.VirtualMachineGuestOsIdentifierOpensuse64Guest:<span class="cov8" title="1">
+                return CIMOSTypeSUSE64Bit</span>
+        case types.VirtualMachineGuestOsIdentifierOpensuseGuest:<span class="cov8" title="1">
+                return CIMOSTypeSUSE</span>
+        case types.VirtualMachineGuestOsIdentifierOracleLinux6Guest:<span class="cov8" title="1">
+                return CIMOSTypeOracle32bit</span>
+        case types.VirtualMachineGuestOsIdentifierOracleLinux6_64Guest:<span class="cov8" title="1">
+                return CIMOSTypeOracle64bit</span>
+        case types.VirtualMachineGuestOsIdentifierOracleLinux7Guest:<span class="cov8" title="1">
+                return CIMOSTypeOracle32bit</span>
+        case types.VirtualMachineGuestOsIdentifierOracleLinux7_64Guest:<span class="cov8" title="1">
+                return CIMOSTypeOracle64bit</span>
+        case types.VirtualMachineGuestOsIdentifierOracleLinux8_64Guest:<span class="cov8" title="1">
+                return CIMOSTypeOracle64bit</span>
+        case types.VirtualMachineGuestOsIdentifierOracleLinux9_64Guest:<span class="cov8" title="1">
+                return CIMOSTypeOracle64bit</span>
+        case types.VirtualMachineGuestOsIdentifierOracleLinuxGuest:<span class="cov8" title="1">
+                return CIMOSTypeOracle32bit</span>
+        case types.VirtualMachineGuestOsIdentifierOracleLinux64Guest:<span class="cov8" title="1">
+                return CIMOSTypeOracle64bit</span>
+        case types.VirtualMachineGuestOsIdentifierOther24xLinux64Guest:<span class="cov8" title="1">
+                return CIMOSTypeLinux24x64Bit</span>
+        case types.VirtualMachineGuestOsIdentifierOther24xLinuxGuest:<span class="cov8" title="1">
+                return CIMOSTypeLinux24x</span>
+        case types.VirtualMachineGuestOsIdentifierOther26xLinux64Guest:<span class="cov8" title="1">
+                return CIMOSTypeLinux26x64Bit</span>
+        case types.VirtualMachineGuestOsIdentifierOther26xLinuxGuest:<span class="cov8" title="1">
+                return CIMOSTypeLinux26x</span>
+        case types.VirtualMachineGuestOsIdentifierOther3xLinux64Guest:<span class="cov8" title="1">
+                return CIMOSTypeLinux64Bit</span>
+        case types.VirtualMachineGuestOsIdentifierOther3xLinuxGuest:<span class="cov8" title="1">
+                return CIMOSTypeLINUX</span>
+        case types.VirtualMachineGuestOsIdentifierOther4xLinux64Guest:<span class="cov8" title="1">
+                return CIMOSTypeLinux64Bit</span>
+        case types.VirtualMachineGuestOsIdentifierOther4xLinuxGuest:<span class="cov8" title="1">
+                return CIMOSTypeLINUX</span>
+        case types.VirtualMachineGuestOsIdentifierOther5xLinux64Guest:<span class="cov8" title="1">
+                return CIMOSTypeLinux64Bit</span>
+        case types.VirtualMachineGuestOsIdentifierOther5xLinuxGuest:<span class="cov8" title="1">
+                return CIMOSTypeLINUX</span>
+        case types.VirtualMachineGuestOsIdentifierOther6xLinux64Guest:<span class="cov8" title="1">
+                return CIMOSTypeLinux64Bit</span>
+        case types.VirtualMachineGuestOsIdentifierOther6xLinuxGuest:<span class="cov8" title="1">
+                return CIMOSTypeLINUX</span>
+        case types.VirtualMachineGuestOsIdentifierOtherLinux64Guest:<span class="cov8" title="1">
+                return CIMOSTypeLinux64Bit</span>
+        case types.VirtualMachineGuestOsIdentifierOtherLinuxGuest:<span class="cov8" title="1">
+                return CIMOSTypeLINUX</span>
+        case types.VirtualMachineGuestOsIdentifierRedhatGuest:<span class="cov8" title="1">
+                return CIMOSTypeRedHatEnterpriseLinux</span>
+        case types.VirtualMachineGuestOsIdentifierRhel2Guest:<span class="cov8" title="1">
+                return CIMOSTypeRedHatEnterpriseLinux</span>
+        case types.VirtualMachineGuestOsIdentifierRhel3Guest:<span class="cov8" title="1">
+                return CIMOSTypeRedHatEnterpriseLinux</span>
+        case types.VirtualMachineGuestOsIdentifierRhel3_64Guest:<span class="cov8" title="1">
+                return CIMOSTypeRedHatEnterpriseLinux64Bit</span>
+        case types.VirtualMachineGuestOsIdentifierRhel4Guest:<span class="cov8" title="1">
+                return CIMOSTypeRedHatEnterpriseLinux</span>
+        case types.VirtualMachineGuestOsIdentifierRhel4_64Guest:<span class="cov8" title="1">
+                return CIMOSTypeRedHatEnterpriseLinux64Bit</span>
+        case types.VirtualMachineGuestOsIdentifierRhel5Guest:<span class="cov8" title="1">
+                return CIMOSTypeRedHatEnterpriseLinux</span>
+        case types.VirtualMachineGuestOsIdentifierRhel5_64Guest:<span class="cov8" title="1">
+                return CIMOSTypeRedHatEnterpriseLinux64Bit</span>
+        case types.VirtualMachineGuestOsIdentifierRhel6Guest:<span class="cov8" title="1">
+                return CIMOSTypeRedHatEnterpriseLinux</span>
+        case types.VirtualMachineGuestOsIdentifierRhel6_64Guest:<span class="cov8" title="1">
+                return CIMOSTypeRedHatEnterpriseLinux64Bit</span>
+        case types.VirtualMachineGuestOsIdentifierRhel7Guest:<span class="cov8" title="1">
+                return CIMOSTypeRedHatEnterpriseLinux</span>
+        case types.VirtualMachineGuestOsIdentifierRhel7_64Guest:<span class="cov8" title="1">
+                return CIMOSTypeRedHatEnterpriseLinux64Bit</span>
+        case types.VirtualMachineGuestOsIdentifierRhel8_64Guest:<span class="cov8" title="1">
+                return CIMOSTypeRedHatEnterpriseLinux64Bit</span>
+        case types.VirtualMachineGuestOsIdentifierRhel9_64Guest:<span class="cov8" title="1">
+                return CIMOSTypeRedHatEnterpriseLinux64Bit</span>
+        case types.VirtualMachineGuestOsIdentifierRockylinux_64Guest:<span class="cov8" title="1">
+                return CIMOSTypeLinux64Bit</span>
+        case types.VirtualMachineGuestOsIdentifierSles10Guest:<span class="cov8" title="1">
+                return CIMOSTypeSLES</span>
+        case types.VirtualMachineGuestOsIdentifierSles10_64Guest:<span class="cov8" title="1">
+                return CIMOSTypeSLES64Bit</span>
+        case types.VirtualMachineGuestOsIdentifierSles11Guest:<span class="cov8" title="1">
+                return CIMOSTypeSLES</span>
+        case types.VirtualMachineGuestOsIdentifierSles11_64Guest:<span class="cov8" title="1">
+                return CIMOSTypeSLES64Bit</span>
+        case types.VirtualMachineGuestOsIdentifierSles12Guest:<span class="cov8" title="1">
+                return CIMOSTypeSLES</span>
+        case types.VirtualMachineGuestOsIdentifierSles12_64Guest:<span class="cov8" title="1">
+                return CIMOSTypeSLES64Bit</span>
+        case types.VirtualMachineGuestOsIdentifierSles15_64Guest:<span class="cov8" title="1">
+                return CIMOSTypeSLES64Bit</span>
+        case types.VirtualMachineGuestOsIdentifierSles16_64Guest:<span class="cov8" title="1">
+                return CIMOSTypeSLES64Bit</span>
+        case types.VirtualMachineGuestOsIdentifierSlesGuest:<span class="cov8" title="1">
+                return CIMOSTypeSLES</span>
+        case types.VirtualMachineGuestOsIdentifierSles64Guest:<span class="cov8" title="1">
+                return CIMOSTypeSLES64Bit</span>
+        case types.VirtualMachineGuestOsIdentifierSuse64Guest:<span class="cov8" title="1">
+                return CIMOSTypeSUSE64Bit</span>
+        case types.VirtualMachineGuestOsIdentifierSuseGuest:<span class="cov8" title="1">
+                return CIMOSTypeSUSE</span>
+        case types.VirtualMachineGuestOsIdentifierTurboLinux64Guest:<span class="cov8" title="1">
+                return CIMOSTypeTurboLinux64Bit</span>
+        case types.VirtualMachineGuestOsIdentifierTurboLinuxGuest:<span class="cov8" title="1">
+                return CIMOSTypeTurboLinux</span>
+        case types.VirtualMachineGuestOsIdentifierUbuntu64Guest:<span class="cov8" title="1">
+                return CIMOSTypeUbuntu64Bit</span>
+        case types.VirtualMachineGuestOsIdentifierUbuntuGuest:<span class="cov8" title="1">
+                return CIMOSTypeUbuntu</span>
+        case types.VirtualMachineGuestOsIdentifierUnixWare7Guest:<span class="cov8" title="1">
+                return CIMOSTypeSCOUnixWare</span>
+
+        // macOS
+        case types.VirtualMachineGuestOsIdentifierDarwin10Guest:<span class="cov8" title="1">
+                return CIMOSTypeMACOS</span>
+        case types.VirtualMachineGuestOsIdentifierDarwin10_64Guest:<span class="cov8" title="1">
+                return CIMOSTypeMACOS</span>
+        case types.VirtualMachineGuestOsIdentifierDarwin11Guest:<span class="cov8" title="1">
+                return CIMOSTypeMACOS</span>
+        case types.VirtualMachineGuestOsIdentifierDarwin11_64Guest:<span class="cov8" title="1">
+                return CIMOSTypeMACOS</span>
+        case types.VirtualMachineGuestOsIdentifierDarwin12_64Guest:<span class="cov8" title="1">
+                return CIMOSTypeMACOS</span>
+        case types.VirtualMachineGuestOsIdentifierDarwin13_64Guest:<span class="cov8" title="1">
+                return CIMOSTypeMACOS</span>
+        case types.VirtualMachineGuestOsIdentifierDarwin14_64Guest:<span class="cov8" title="1">
+                return CIMOSTypeMACOS</span>
+        case types.VirtualMachineGuestOsIdentifierDarwin15_64Guest:<span class="cov8" title="1">
+                return CIMOSTypeMACOS</span>
+        case types.VirtualMachineGuestOsIdentifierDarwin16_64Guest:<span class="cov8" title="1">
+                return CIMOSTypeMACOS</span>
+        case types.VirtualMachineGuestOsIdentifierDarwin17_64Guest:<span class="cov8" title="1">
+                return CIMOSTypeMACOS</span>
+        case types.VirtualMachineGuestOsIdentifierDarwin18_64Guest:<span class="cov8" title="1">
+                return CIMOSTypeMACOS</span>
+        case types.VirtualMachineGuestOsIdentifierDarwin19_64Guest:<span class="cov8" title="1">
+                return CIMOSTypeMACOS</span>
+        case types.VirtualMachineGuestOsIdentifierDarwin20_64Guest:<span class="cov8" title="1">
+                return CIMOSTypeMACOS</span>
+        case types.VirtualMachineGuestOsIdentifierDarwin21_64Guest:<span class="cov8" title="1">
+                return CIMOSTypeMACOS</span>
+        case types.VirtualMachineGuestOsIdentifierDarwin22_64Guest:<span class="cov8" title="1">
+                return CIMOSTypeMACOS</span>
+        case types.VirtualMachineGuestOsIdentifierDarwin23_64Guest:<span class="cov8" title="1">
+                return CIMOSTypeMACOS</span>
+        case types.VirtualMachineGuestOsIdentifierDarwin64Guest:<span class="cov8" title="1">
+                return CIMOSTypeMACOS</span>
+        case types.VirtualMachineGuestOsIdentifierDarwinGuest:<span class="cov8" title="1">
+                return CIMOSTypeMACOS</span>
+
+        // Solaris
+        case types.VirtualMachineGuestOsIdentifierSolaris10Guest:<span class="cov8" title="1">
+                return CIMOSTypeSolaris</span>
+        case types.VirtualMachineGuestOsIdentifierSolaris10_64Guest:<span class="cov8" title="1">
+                return CIMOSTypeSolaris64Bit</span>
+        case types.VirtualMachineGuestOsIdentifierSolaris11_64Guest:<span class="cov8" title="1">
+                return CIMOSTypeSolaris64Bit</span>
+        case types.VirtualMachineGuestOsIdentifierSolaris6Guest:<span class="cov8" title="1">
+                return CIMOSTypeSolaris</span>
+        case types.VirtualMachineGuestOsIdentifierSolaris7Guest:<span class="cov8" title="1">
+                return CIMOSTypeSolaris</span>
+        case types.VirtualMachineGuestOsIdentifierSolaris8Guest:<span class="cov8" title="1">
+                return CIMOSTypeSolaris</span>
+        case types.VirtualMachineGuestOsIdentifierSolaris9Guest:<span class="cov8" title="1">
+                return CIMOSTypeSolaris</span>
+
+        // Netware
+        case types.VirtualMachineGuestOsIdentifierNetware4Guest:<span class="cov8" title="1">
+                return CIMOSTypeNetWare</span>
+        case types.VirtualMachineGuestOsIdentifierNetware5Guest:<span class="cov8" title="1">
+                return CIMOSTypeNetWare</span>
+        case types.VirtualMachineGuestOsIdentifierNetware6Guest:<span class="cov8" title="1">
+                return CIMOSTypeNetWare</span>
+        case types.VirtualMachineGuestOsIdentifierNld9Guest:<span class="cov8" title="1">
+                return CIMOSTypeNovellLinuxDesktop</span>
+        case types.VirtualMachineGuestOsIdentifierOesGuest:<span class="cov8" title="1">
+                return CIMOSTypeNovellOES</span>
+
+        // VMware
+        case types.VirtualMachineGuestOsIdentifierVmkernelGuest:<span class="cov8" title="1">
+                return CIMOSTypeVMwareESXi</span>
+        case types.VirtualMachineGuestOsIdentifierVmkernel5Guest:<span class="cov8" title="1">
+                return CIMOSTypeVMwareESXi</span>
+        case types.VirtualMachineGuestOsIdentifierVmkernel6Guest:<span class="cov8" title="1">
+                return CIMOSTypeVMwareESXi</span>
+        case types.VirtualMachineGuestOsIdentifierVmkernel65Guest:<span class="cov8" title="1">
+                return CIMOSTypeVMwareESXi</span>
+        case types.VirtualMachineGuestOsIdentifierVmkernel7Guest:<span class="cov8" title="1">
+                return CIMOSTypeVMwareESXi</span>
+        case types.VirtualMachineGuestOsIdentifierVmkernel8Guest:<span class="cov8" title="1">
+                return CIMOSTypeVMwareESXi</span>
+        case types.VirtualMachineGuestOsIdentifierVmwarePhoton64Guest:<span class="cov8" title="1">
+                return CIMOSTypeLinux64Bit</span>
+
+        // OS/2
+        case types.VirtualMachineGuestOsIdentifierEComStationGuest:<span class="cov8" title="1">
+                return CIMOSTypeeComStation32bitx</span>
+        case types.VirtualMachineGuestOsIdentifierEComStation2Guest:<span class="cov8" title="1">
+                return CIMOSTypeeComStation32bitx</span>
+        case types.VirtualMachineGuestOsIdentifierOs2Guest:<span class="cov8" title="1">
+                return CIMOSTypeOS2</span>
+
+        // Other
+        case types.VirtualMachineGuestOsIdentifierOtherGuest:<span class="cov8" title="1">
+                return CIMOSTypeOther</span>
+        case types.VirtualMachineGuestOsIdentifierOtherGuest64:<span class="cov8" title="1">
+                return CIMOSTypeOther64Bit</span>
+        case types.VirtualMachineGuestOsIdentifierAmazonlinux2_64Guest:<span class="cov8" title="1">
+                return CIMOSTypeLinux64Bit</span>
+        case types.VirtualMachineGuestOsIdentifierAmazonlinux3_64Guest:<span class="cov8" title="1">
+                return CIMOSTypeLinux64Bit</span>
+        case types.VirtualMachineGuestOsIdentifierCrxPod1Guest:<span class="cov8" title="1">
+                return CIMOSTypeOther</span>
+
+        // Default to Unknown if not found
+        default:<span class="cov8" title="1">
+                return CIMOSTypeUnknown</span>
+        }
+}
+</pre>
+		
+		<pre class="file" id="file1" style="display: none">// © Broadcom. All Rights Reserved.
+// The term "Broadcom" refers to Broadcom Inc. and/or its subsidiaries.
+// SPDX-License-Identifier: Apache-2.0
+
+package ovf
+
+import (
+        "errors"
+        "fmt"
+        "math"
+        "strconv"
+        "strings"
+
+        "github.com/vmware/govmomi/object"
+        "github.com/vmware/govmomi/vim25/types"
+)
+
+const (
+        ResourceSubTypeSoundCardSB16          = "vmware.soundcard.sb16"
+        ResourceSubTypeSoundCardEnsoniq1371   = "vmware.soundcard.ensoniq1371"
+        ResourceSubTypeSoundCardHDAudio       = "vmware.soundcard.hdaudio"
+        ResourceSubTypePCIController          = "vmware.pcicontroller"
+        ResourceSubTypePS2Controller          = "vmware.ps2controller"
+        ResourceSubTypeSIOController          = "vmware.siocontroller"
+        ResourceSubTypeKeyboard               = "vmware.keyboard"
+        ResourceSubTypePointingDevice         = "vmware.pointingdevice"
+        ResourceSubTypeVMCI                   = "vmware.vmci"
+        ResourceSubTypeUSBEHCI                = "vmware.usb.ehci" /* USB 2.0 */
+        ResourceSubTypeUSBXHCI                = "vmware.usb.xhci" /* USB 3.0 */
+        ResourceSubTypeCdromISO               = "vmware.cdrom.iso"
+        ResourceSubTypeCDROMRemotePassthrough = "vmware.cdrom.remotepassthrough"
+        ResourceSubTypeCDROMRemoteATAPI       = "vmware.cdrom.remoteatapi"
+        ResourceSubTypeCDROMPassthrough       = "vmware.cdrom.passthrough"
+        ResourceSubTypeCDROMATAPI             = "vmware.cdrom.atapi"
+        ResourceSubTypeFloppyDevice           = "vmware.floppy.device"
+        ResourceSubTypeFloppyImage            = "vmware.floppy.image"
+        ResourceSubTypeFloppyRemoveDevice     = "vmware.floppy.remotedevice"
+        ResourceSubTypeSCSIPassthrough        = "vmware.scsi.passthrough"
+        ResourceSubTypeParallelPortDevice     = "vmware.parallelport.device"
+        ResourceSubTypeParallelPortFile       = "vmware.parallelport.file"
+        ResourceSubTypeSerialPortDevice       = "vmware.serialport.device"
+        ResourceSubTypeSerialPortFile         = "vmware.serialport.file"
+        ResourceSubTypeSerialPortPipe         = "vmware.serialport.pipe"
+        ResourceSubTypeSerialPortURI          = "vmware.serialport.uri"
+        ResourceSubTypeSerialPortThinPrint    = "vmware.serialport.thinprint"
+        ResourceSubTypeSATAAHCI               = "vmware.sata.ahci"
+        ResourceSubTypeSATAAHCIAlter          = "ahci"
+        ResourceSubTypeNVMEController         = "vmware.nvme.controller"
+        ResourceSubTypeNVDIMMController       = "vmware.nvdimm.controller"
+        ResourceSubTypeNVDIMMDevice           = "vmware.nvdimm.device"
+        ResourceSubTypePCIPassthrough         = "vmware.pci.passthrough"
+        ResourceSubTypePCIPassthroughDVX      = "vmware.pci.passthrough-dvx"
+        ResourceSubTypePCIPassthroughAH       = "vmware.pci.passthrough-ah"
+        ResourceSubTypePCIPassthroughVMIOP    = "vmware.pci.passthrough-vmiop"
+        ResourceSubTypePrecisionClock         = "vmware.precisionclock"
+        ResourceSubTypeWatchdogTimer          = "vmware.watchdogtimer"
+        ResourceSubTypeVTPM                   = "vmware.vtpm"
+)
+
+var errUnsupportedResourceSubtype = errors.New("unsupported resource subtype")
+
+// ErrUnsupportedItem is returned by Envelope.ToConfigSpec when there is an
+// invalid item configuration.
+type ErrUnsupportedItem struct {
+        Name             string
+        Index            int
+        InstanceID       string
+        ResourceType     CIMResourceType
+        ResourceSubType  string
+        LocalizedMessage string
+}
+
+func (e ErrUnsupportedItem) Error() string <span class="cov8" title="1">{
+        msg := fmt.Sprintf(
+                "unsupported item name=%q, index=%d, instanceID=%q",
+                e.Name, e.Index, e.InstanceID)
+        if e.ResourceType &gt; 0 </span><span class="cov8" title="1">{
+                msg = fmt.Sprintf("%s, resourceType=%d", msg, e.ResourceType)
+        }</span>
+        <span class="cov8" title="1">if e.ResourceSubType != "" </span><span class="cov8" title="1">{
+                msg = fmt.Sprintf("%s, resourceSubType=%s", msg, e.ResourceSubType)
+        }</span>
+        <span class="cov8" title="1">if e.LocalizedMessage != "" </span><span class="cov8" title="1">{
+                msg = fmt.Sprintf("%s, msg=%q", msg, e.LocalizedMessage)
+        }</span>
+        <span class="cov8" title="1">return msg</span>
+}
+
+// AsErrUnsupportedItem returns any possible wrapped ErrUnsupportedItem error
+// from the provided error.
+func AsErrUnsupportedItem(in error) (ErrUnsupportedItem, bool) <span class="cov8" title="1">{
+        var out ErrUnsupportedItem
+        if errors.As(in, &amp;out) </span><span class="cov8" title="1">{
+                return out, true
+        }</span>
+        <span class="cov8" title="1">return ErrUnsupportedItem{}, false</span>
+}
+
+func errUnsupportedItem(
+        index int,
+        item itemElement,
+        inner error,
+        args ...any) error <span class="cov8" title="1">{
+
+        err := ErrUnsupportedItem{
+                Name:            item.ElementName,
+                InstanceID:      item.InstanceID,
+                Index:           index,
+                ResourceSubType: item.resourceSubType,
+        }
+
+        if item.ResourceType != nil </span><span class="cov8" title="1">{
+                err.ResourceType = *item.ResourceType
+        }</span>
+
+        <span class="cov8" title="1">if len(args) == 1 </span><span class="cov8" title="1">{
+                err.LocalizedMessage = args[0].(string)
+        }</span> else<span class="cov8" title="1"> if len(args) &gt; 1 </span><span class="cov0" title="0">{
+                err.LocalizedMessage = fmt.Sprintf(args[0].(string), args[1:]...)
+        }</span>
+
+        <span class="cov8" title="1">if inner != nil </span><span class="cov8" title="1">{
+                return fmt.Errorf("%w, %w", err, inner)
+        }</span>
+
+        <span class="cov8" title="1">return err</span>
+}
+
+type itemElement struct {
+        ResourceAllocationSettingData
+
+        resourceSubType string
+}
+
+// hardwareEntry is a single Item, EthernetPortItem, or StorageItem to process,
+// with its index in the combined list (for error reporting).
+type hardwareEntry struct {
+        index int
+        item  itemElement
+}
+
+// hardwareEntries returns all Item, EthernetPortItem, and StorageItem elements
+// from hw in document order (DSP0243 §8.1). EthernetPortItem and StorageItem
+// are converted to itemElement so they can be processed by the same switch.
+func (hw VirtualHardwareSection) hardwareEntries() []hardwareEntry <span class="cov8" title="1">{
+        var out []hardwareEntry
+        idx := 0
+        for i := range hw.Item </span><span class="cov8" title="1">{
+                out = append(out, hardwareEntry{index: idx, item: itemElement{
+                        ResourceAllocationSettingData: hw.Item[i],
+                }})
+                idx++
+        }</span>
+        <span class="cov8" title="1">for i := range hw.EthernetPortItem </span><span class="cov8" title="1">{
+                out = append(out, hardwareEntry{index: idx, item: ethernetToItemElement(hw.EthernetPortItem[i])})
+                idx++
+        }</span>
+        <span class="cov8" title="1">for i := range hw.StorageItem </span><span class="cov8" title="1">{
+                out = append(out, hardwareEntry{index: idx, item: storageToItemElement(hw.StorageItem[i])})
+                idx++
+        }</span>
+        <span class="cov8" title="1">return out</span>
+}
+
+func ethernetToItemElement(ep EthernetPortAllocationSettingData) itemElement <span class="cov8" title="1">{
+        rt := EthernetAdapter // 10
+        rasd := ResourceAllocationSettingData{
+                CIMResourceAllocationSettingData: CIMResourceAllocationSettingData{
+                        ElementName:            ep.ElementName,
+                        InstanceID:             ep.InstanceID,
+                        ResourceType:           &amp;rt,
+                        ResourceSubType:        ep.ResourceSubType,
+                        Address:                ep.Address,
+                        AddressOnParent:        ep.AddressOnParent,
+                        AllocationUnits:        ep.AllocationUnits,
+                        AutomaticAllocation:    ep.AutomaticAllocation,
+                        Connection:             ep.Connection,
+                        Description:            ep.Description,
+                        VirtualQuantity:        ep.VirtualQuantity,
+                        VirtualQuantityUnits:   ep.VirtualQuantityUnits,
+                },
+                Required:      ep.Required,
+                Configuration: ep.Configuration,
+                Bound:         ep.Bound,
+                Config:        ep.Config,
+        }
+        ie := itemElement{ResourceAllocationSettingData: rasd}
+        if ep.ResourceSubType != nil </span><span class="cov0" title="0">{
+                ie.resourceSubType = strings.ToLower(*ep.ResourceSubType)
+        }</span>
+        <span class="cov8" title="1">return ie</span>
+}
+
+func storageToItemElement(s StorageAllocationSettingData) itemElement <span class="cov8" title="1">{
+        // Map StorageItem (CIM_StorageAllocationSettingData) to RASD for disk handling.
+        // ResourceType 31 (LogicalDisk) is treated as a disk drive (17) for deployment.
+        rt := s.ResourceType
+        if rt == nil </span><span class="cov0" title="0">{
+                rt = func() *CIMResourceType </span><span class="cov0" title="0">{ x := DiskDrive; return &amp;x }</span>()
+        } else<span class="cov8" title="1"> if *rt == LogicalDisk </span><span class="cov8" title="1">{
+                // Treat LogicalDisk like DiskDrive for ToConfigSpec.
+                rt = func() *CIMResourceType </span><span class="cov8" title="1">{ x := DiskDrive; return &amp;x }</span>()
+        }
+        <span class="cov8" title="1">rasd := ResourceAllocationSettingData{
+                CIMResourceAllocationSettingData: CIMResourceAllocationSettingData{
+                        ElementName:          s.ElementName,
+                        InstanceID:           s.InstanceID,
+                        ResourceType:         rt,
+                        ResourceSubType:      s.ResourceSubType,
+                        AddressOnParent:      s.AddressOnParent,
+                        Address:              s.Address,
+                        AllocationUnits:      s.AllocationUnits,
+                        AutomaticAllocation:  s.AutomaticAllocation,
+                        Description:          s.Description,
+                        HostResource:         s.HostResource,
+                        Parent:               s.Parent,
+                        Reservation:           s.Reservation,
+                        VirtualQuantity:      s.VirtualQuantity,
+                        VirtualQuantityUnits: s.VirtualQuantityUnits,
+                },
+                Required:      s.Required,
+                Configuration: s.Configuration,
+                Bound:         s.Bound,
+        }
+        ie := itemElement{ResourceAllocationSettingData: rasd}
+        if s.ResourceSubType != nil </span><span class="cov0" title="0">{
+                ie.resourceSubType = strings.ToLower(*s.ResourceSubType)
+        }</span>
+        <span class="cov8" title="1">return ie</span>
+}
+
+type configSpec = types.VirtualMachineConfigSpec
+
+// ToConfigSpecOptions influence the behavior of the ToConfigSpecWithOptions
+// function.
+type ToConfigSpecOptions struct {
+
+        // Strict indicates that an error should be returned on Item elements in
+        // a VirtualHardware section that have an unknown ResourceType, i.e. a value
+        // that falls outside the range of the enum CIMResourceType.
+        Strict bool
+
+        // VirtualSystemCollectionIndex specifies the index of the VirtualSystem in
+        // the OVF's VirtualSystemCollection to transform into the ConfigSpec.
+        VirtualSystemCollectionIndex *int
+}
+
+// ToConfigSpec calls ToConfigSpecWithOptions with an empty ToConfigSpecOptions
+// object.
+func (e Envelope) ToConfigSpec() (types.VirtualMachineConfigSpec, error) <span class="cov8" title="1">{
+        return e.ToConfigSpecWithOptions(ToConfigSpecOptions{})
+}</span>
+
+// ToConfigSpecWithOptions transforms the envelope into a ConfigSpec that may be
+// used to create a new virtual machine.
+// Please note, at this time:
+//   - Only a single VirtualSystem is supported. The VirtualSystemCollection
+//     section is ignored.
+//   - Only the first VirtualHardware section is supported.
+//   - Only the default deployment option configuration is considered. Elements
+//     part of a non-default configuration are ignored.
+//   - Disks must specify zero or one HostResource elements.
+//   - Many, many more constraints...
+func (e Envelope) ToConfigSpecWithOptions(
+        opts ToConfigSpecOptions) (types.VirtualMachineConfigSpec, error) <span class="cov8" title="1">{
+
+        vs := e.VirtualSystem
+        if vs == nil </span><span class="cov8" title="1">{
+                if i := opts.VirtualSystemCollectionIndex; i != nil </span><span class="cov8" title="1">{
+                        if vsc := e.VirtualSystemCollection; vsc != nil </span><span class="cov8" title="1">{
+                                if len(vsc.VirtualSystem) &gt; *i </span><span class="cov8" title="1">{
+                                        vs = &amp;vsc.VirtualSystem[*i]
+                                }</span>
+                        }
+                }
+                <span class="cov8" title="1">if vs == nil </span><span class="cov8" title="1">{
+                        return configSpec{}, errors.New("no VirtualSystem")
+                }</span>
+        }
+
+        // Determine if there is a default configuration.
+        <span class="cov8" title="1">var defaultConfigName string
+        if do := e.DeploymentOption; do != nil </span><span class="cov8" title="1">{
+                for _, c := range do.Configuration </span><span class="cov8" title="1">{
+                        if d := c.Default; d != nil &amp;&amp; *d </span><span class="cov8" title="1">{
+                                defaultConfigName = c.ID
+                                break</span>
+                        }
+                }
+        }
+
+        <span class="cov8" title="1">dst := configSpec{
+                Files: &amp;types.VirtualMachineFileInfo{},
+                Name:  vs.ID,
+        }
+
+        // Set the guest ID.
+        if os := vs.OperatingSystem; os != nil &amp;&amp; os.OSType != nil </span><span class="cov8" title="1">{
+                dst.GuestId = *os.OSType
+        }</span>
+
+        // Parse the hardware.
+        <span class="cov8" title="1">if err := e.toHardware(&amp;dst, defaultConfigName, vs, opts); err != nil </span><span class="cov8" title="1">{
+                return configSpec{}, err
+        }</span>
+
+        // Parse the vApp config.
+        <span class="cov8" title="1">if err := e.toVAppConfig(&amp;dst, defaultConfigName, vs); err != nil </span><span class="cov0" title="0">{
+                return configSpec{}, err
+        }</span>
+
+        <span class="cov8" title="1">return dst, nil</span>
+}
+
+func (e Envelope) toHardware(
+        dst *configSpec,
+        configName string,
+        vs *VirtualSystem,
+        opts ToConfigSpecOptions) error <span class="cov8" title="1">{
+
+        var hw VirtualHardwareSection
+        if len(vs.VirtualHardware) == 0 </span><span class="cov0" title="0">{
+                return errors.New("no VirtualHardware")
+        }</span>
+        <span class="cov8" title="1">hw = vs.VirtualHardware[0]
+
+        // Set the hardware version.
+        if hw.System != nil </span><span class="cov8" title="1">{
+                if vmx := hw.System.VirtualSystemType; vmx != nil </span><span class="cov8" title="1">{
+                        dst.Version = *vmx
+                }</span>
+        }
+
+        // Parse the config
+        <span class="cov8" title="1">e.toConfig(dst, hw)
+
+        // Parse the extra config.
+        e.toExtraConfig(dst, hw)
+
+        var (
+                devices   object.VirtualDeviceList
+                resources = map[string]types.BaseVirtualDevice{}
+        )
+
+        entries := hw.hardwareEntries()
+        for _, entry := range entries </span><span class="cov8" title="1">{
+                index := entry.index
+                item := &amp;entry.item
+
+                // Skip range markers (DSP0243 §8.4); only the "normal" item is used for ConfigSpec.
+                if b := item.Bound; b != nil &amp;&amp; (*b == "min" || *b == "max") </span><span class="cov8" title="1">{
+                        continue</span>
+                }
+
+                <span class="cov8" title="1">if c := item.Configuration; c != nil </span><span class="cov8" title="1">{
+                        if *c != configName </span><span class="cov8" title="1">{
+                                // Skip items that do not belong to the provided config.
+                                continue</span>
+                        }
+                }
+
+                <span class="cov8" title="1">if item.ResourceType == nil </span><span class="cov0" title="0">{
+                        return errUnsupportedItem(index, *item, nil, "nil ResourceType")
+                }</span>
+
+                // Get the resource sub type, if any (may already be set for EthernetPortItem/StorageItem).
+                <span class="cov8" title="1">if rst := item.ResourceSubType; rst != nil &amp;&amp; item.resourceSubType == "" </span><span class="cov8" title="1">{
+                        item.resourceSubType = strings.ToLower(*rst)
+                }</span>
+
+                <span class="cov8" title="1">var (
+                        d   types.BaseVirtualDevice
+                        err error
+                )
+
+                switch *item.ResourceType </span>{
+
+                case Other:<span class="cov8" title="1"> // 1
+                        d, err = e.toOther(*item, devices, resources)</span>
+
+                case ComputerSystem:<span class="cov0" title="0"> // 2
+                        if opts.Strict </span><span class="cov0" title="0">{
+                                return errUnsupportedItem(index, *item, nil, "unsupported resource type")
+                        }</span>
+
+                case Processor:<span class="cov8" title="1"> // 3
+                        if item.VirtualQuantity == nil </span><span class="cov0" title="0">{
+                                return errUnsupportedItem(
+                                        index, *item, nil, "nil VirtualQuantity")
+                        }</span>
+                        <span class="cov8" title="1">dst.NumCPUs = int32(*item.VirtualQuantity)
+                        if cps := item.CoresPerSocket; cps != nil </span><span class="cov8" title="1">{
+                                dst.NumCoresPerSocket = &amp;cps.Value
+                        }</span>
+
+                case Memory:<span class="cov8" title="1"> // 4
+                        if item.VirtualQuantity == nil </span><span class="cov0" title="0">{
+                                return errUnsupportedItem(
+                                        index, *item, nil, "nil VirtualQuantity")
+                        }</span>
+                        <span class="cov8" title="1">dst.MemoryMB = int64(*item.VirtualQuantity)</span>
+
+                case IdeController:<span class="cov8" title="1"> // 5
+                        d, err = e.toIDEController(*item, devices, resources)</span>
+
+                case ParallelScsiHba:<span class="cov8" title="1"> // 6
+                        d, err = e.toSCSIController(*item, devices, resources)</span>
+
+                case FcHba:<span class="cov0" title="0"> // 7
+                        if opts.Strict </span><span class="cov0" title="0">{
+                                return errUnsupportedItem(index, *item, nil, "unsupported resource type")
+                        }</span>
+
+                case IScsiHba:<span class="cov0" title="0"> // 8
+                        if opts.Strict </span><span class="cov0" title="0">{
+                                return errUnsupportedItem(index, *item, nil, "unsupported resource type")
+                        }</span>
+
+                case IbHba:<span class="cov0" title="0"> // 9
+                        if opts.Strict </span><span class="cov0" title="0">{
+                                return errUnsupportedItem(index, *item, nil, "unsupported resource type")
+                        }</span>
+
+                case EthernetAdapter:<span class="cov8" title="1"> // 10
+                        d, err = e.toNetworkInterface(*item, devices, resources)</span>
+
+                case OtherNetwork:<span class="cov0" title="0"> // 11
+                        if opts.Strict </span><span class="cov0" title="0">{
+                                return errUnsupportedItem(index, *item, nil, "unsupported resource type")
+                        }</span>
+
+                case IoSlot:<span class="cov0" title="0"> // 12
+                        if opts.Strict </span><span class="cov0" title="0">{
+                                return errUnsupportedItem(index, *item, nil, "unsupported resource type")
+                        }</span>
+
+                case IoDevice:<span class="cov0" title="0"> // 13
+                        if opts.Strict </span><span class="cov0" title="0">{
+                                return errUnsupportedItem(index, *item, nil, "unsupported resource type")
+                        }</span>
+
+                case FloppyDrive:<span class="cov8" title="1"> // 14
+                        if devices.PickController((*types.VirtualSIOController)(nil)) == nil </span><span class="cov8" title="1">{
+                                c := &amp;types.VirtualSIOController{}
+                                c.Key = devices.NewKey()
+                                devices = append(devices, c)
+                        }</span>
+                        <span class="cov8" title="1">d, err = e.toFloppyDrive(*item, devices, resources)</span>
+
+                case CdDrive, DvdDrive:<span class="cov8" title="1"> // 15, 16
+                        d, err = e.toCDOrDVDDrive(*item, devices, resources)</span>
+
+                case DiskDrive:<span class="cov8" title="1"> // 17 (StorageItem with ResourceType 31 LogicalDisk is converted to 17 in storageToItemElement)
+                        if item.Parent == nil </span><span class="cov8" title="1">{
+                                id := e.ensureDefaultSCSIController(&amp;devices, resources)
+                                item.Parent = &amp;id
+                        }</span>
+                        <span class="cov8" title="1">d, err = e.toVirtualDisk(*item, devices, resources)</span>
+
+                case TapeDrive:<span class="cov0" title="0"> // 18
+                        if opts.Strict </span><span class="cov0" title="0">{
+                                return errUnsupportedItem(index, *item, nil, "unsupported resource type")
+                        }</span>
+
+                case StorageExtent:<span class="cov0" title="0"> // 19
+                        if opts.Strict </span><span class="cov0" title="0">{
+                                return errUnsupportedItem(index, *item, nil, "unsupported resource type")
+                        }</span>
+
+                case OtherStorage:<span class="cov8" title="1"> // 20
+                        d, err = e.toOtherStorage(*item, devices, resources)</span>
+
+                case SerialPort:<span class="cov8" title="1"> // 21
+                        if opts.Strict </span><span class="cov8" title="1">{
+                                return errUnsupportedItem(index, *item, nil, "unsupported resource type")
+                        }</span>
+
+                case ParallelPort:<span class="cov0" title="0"> // 22
+                        if opts.Strict </span><span class="cov0" title="0">{
+                                return errUnsupportedItem(index, *item, nil, "unsupported resource type")
+                        }</span>
+
+                case UsbController:<span class="cov8" title="1"> // 23
+                        d, err = e.toUSB(*item, devices, resources)</span>
+
+                case Graphics:<span class="cov8" title="1"> // 24
+                        d, err = e.toVideoCard(*item, devices, resources)</span>
+
+                case Ieee1394:<span class="cov0" title="0"> // 25
+                        if opts.Strict </span><span class="cov0" title="0">{
+                                return errUnsupportedItem(index, *item, nil, "unsupported resource type")
+                        }</span>
+
+                case PartitionableUnit:<span class="cov0" title="0"> // 26
+                        if opts.Strict </span><span class="cov0" title="0">{
+                                return errUnsupportedItem(index, *item, nil, "unsupported resource type")
+                        }</span>
+
+                case BasePartitionable:<span class="cov0" title="0"> // 27
+                        if opts.Strict </span><span class="cov0" title="0">{
+                                return errUnsupportedItem(index, *item, nil, "unsupported resource type")
+                        }</span>
+
+                case PowerSupply:<span class="cov0" title="0"> // 28
+                        if opts.Strict </span><span class="cov0" title="0">{
+                                return errUnsupportedItem(index, *item, nil, "unsupported resource type")
+                        }</span>
+
+                case CoolingDevice:<span class="cov0" title="0"> // 29
+                        if opts.Strict </span><span class="cov0" title="0">{
+                                return errUnsupportedItem(index, *item, nil, "unsupported resource type")
+                        }</span>
+
+                case EthernetSwitchPort:<span class="cov0" title="0"> // 30
+                        if opts.Strict </span><span class="cov0" title="0">{
+                                return errUnsupportedItem(index, *item, nil, "unsupported resource type")
+                        }</span>
+
+                case LogicalDisk:<span class="cov8" title="1"> // 31 — treat as disk (Item with ResourceType 31; StorageItem 31 is converted to 17 in storageToItemElement)
+                        if item.Parent == nil </span><span class="cov0" title="0">{
+                                id := e.ensureDefaultSCSIController(&amp;devices, resources)
+                                item.Parent = &amp;id
+                        }</span>
+                        <span class="cov8" title="1">d, err = e.toVirtualDisk(*item, devices, resources)</span>
+
+                case StorageVolume:<span class="cov0" title="0"> // 32
+                        if opts.Strict </span><span class="cov0" title="0">{
+                                return errUnsupportedItem(index, *item, nil, "unsupported resource type")
+                        }</span>
+
+                case EthernetConnection:<span class="cov0" title="0"> // 33
+                        if opts.Strict </span><span class="cov0" title="0">{
+                                return errUnsupportedItem(index, *item, nil, "unsupported resource type")
+                        }</span>
+
+                default:<span class="cov8" title="1">
+                        if opts.Strict </span><span class="cov8" title="1">{
+                                return errUnsupportedItem(
+                                        index, *item, nil, "unsupported resource type")
+                        }</span>
+                }
+
+                <span class="cov8" title="1">if err != nil </span><span class="cov8" title="1">{
+                        if err == errUnsupportedResourceSubtype </span><span class="cov8" title="1">{
+                                if !opts.Strict </span><span class="cov0" title="0">{
+                                        continue</span>
+                                }
+                        }
+                        <span class="cov8" title="1">return errUnsupportedItem(index, *item, err)</span>
+                }
+
+                <span class="cov8" title="1">if d != nil </span><span class="cov8" title="1">{
+                        setConnectable(d, *item)
+                        if err := e.setUnitNumber(*item, d); err != nil </span><span class="cov0" title="0">{
+                                return errUnsupportedItem(index, *item, err)
+                        }</span>
+                        <span class="cov8" title="1">if err := e.setPCISlotNumber(*item, d); err != nil </span><span class="cov0" title="0">{
+                                return errUnsupportedItem(index, *item, err)
+                        }</span>
+                        <span class="cov8" title="1">devices = append(devices, d)</span>
+                }
+        }
+
+        // Add the devices to the ConfigSpec.
+        <span class="cov8" title="1">dst.DeviceChange, _ = devices.ConfigSpec(types.VirtualDeviceConfigSpecOperationAdd)
+
+        return nil</span>
+}
+
+func (e Envelope) setUnitNumber(
+        item itemElement,
+        d types.BaseVirtualDevice) error <span class="cov8" title="1">{
+
+        if item.AddressOnParent == nil || *item.AddressOnParent == "" </span><span class="cov8" title="1">{
+                return nil
+        }</span>
+
+        <span class="cov8" title="1">unitNumber, err := strconv.ParseInt(*item.AddressOnParent, 10, 32)
+        if err != nil </span><span class="cov0" title="0">{
+                return fmt.Errorf("invalid AddressOnParent=%q", *item.AddressOnParent)
+        }</span>
+
+        <span class="cov8" title="1">d.GetVirtualDevice().UnitNumber = types.NewInt32(int32(unitNumber))
+        return nil</span>
+}
+
+func (e Envelope) setBusNumber(
+        item itemElement,
+        d types.BaseVirtualDevice) error <span class="cov8" title="1">{
+
+        if item.Address == nil || *item.Address == "" </span><span class="cov8" title="1">{
+                return nil
+        }</span>
+
+        <span class="cov8" title="1">c, ok := d.(types.BaseVirtualController)
+        if !ok </span><span class="cov0" title="0">{
+                return fmt.Errorf("expectedType=%s, actualType=%T",
+                        "types.BaseVirtualController", d)
+        }</span>
+
+        <span class="cov8" title="1">busNumber, err := strconv.ParseInt(*item.Address, 10, 32)
+        if err != nil </span><span class="cov0" title="0">{
+                return fmt.Errorf("invalid Address=%q", *item.Address)
+        }</span>
+
+        <span class="cov8" title="1">c.GetVirtualController().BusNumber = int32(busNumber)
+        return nil</span>
+}
+
+func (e Envelope) setPCISlotNumber(
+        item itemElement,
+        d types.BaseVirtualDevice) error <span class="cov8" title="1">{
+
+        var pciSlotNumber int32 = -1
+
+        for i := range item.Config </span><span class="cov8" title="1">{
+                c := item.Config[i]
+                if c.Key == "slotInfo.pciSlotNumber" </span><span class="cov8" title="1">{
+                        if c.Value != "" </span><span class="cov8" title="1">{
+                                v, err := strconv.ParseInt(c.Value, 10, 32)
+                                if err != nil </span><span class="cov0" title="0">{
+                                        return fmt.Errorf("invalid pci slot number %s", c.Value)
+                                }</span>
+                                <span class="cov8" title="1">pciSlotNumber = int32(v)</span>
+                        }
+                        <span class="cov8" title="1">break</span>
+                }
+        }
+
+        <span class="cov8" title="1">if pciSlotNumber &gt;= 0 </span><span class="cov8" title="1">{
+                vd := d.GetVirtualDevice()
+                if vd.SlotInfo == nil </span><span class="cov8" title="1">{
+                        vd.SlotInfo = &amp;types.VirtualDevicePciBusSlotInfo{}
+                }</span>
+                <span class="cov8" title="1">si, ok := vd.SlotInfo.(*types.VirtualDevicePciBusSlotInfo)
+                if !ok </span><span class="cov0" title="0">{
+                        return fmt.Errorf("expectedType=%s, actualType=%T",
+                                "*types.VirtualDevicePciBusSlotInfo", vd.SlotInfo)
+                }</span>
+                <span class="cov8" title="1">si.PciSlotNumber = pciSlotNumber</span>
+        }
+
+        <span class="cov8" title="1">return nil</span>
+}
+
+func (e Envelope) ovfDisk(diskID string) *VirtualDiskDesc <span class="cov8" title="1">{
+        for _, disk := range e.Disk.Disks </span><span class="cov8" title="1">{
+                if strings.HasSuffix(diskID, disk.DiskID) </span><span class="cov8" title="1">{
+                        return &amp;disk
+                }</span>
+        }
+        <span class="cov8" title="1">return nil</span>
+}
+
+const defaultSCSIControllerInstanceID = "scsi0"
+
+// ensureDefaultSCSIController creates a SCSI controller and registers it under
+// defaultSCSIControllerInstanceID if one is not already present. Used when a
+// disk (Item or StorageItem) has no Parent, e.g. in OVF 2.x StorageItem-only
+// virtual hardware.
+func (e Envelope) ensureDefaultSCSIController(
+        devices *object.VirtualDeviceList,
+        resources map[string]types.BaseVirtualDevice) string <span class="cov8" title="1">{
+        if _, ok := resources[defaultSCSIControllerInstanceID]; ok </span><span class="cov0" title="0">{
+                return defaultSCSIControllerInstanceID
+        }</span>
+        <span class="cov8" title="1">d, err := devices.CreateSCSIController("lsilogic")
+        if err != nil </span><span class="cov0" title="0">{
+                return defaultSCSIControllerInstanceID
+        }</span>
+        <span class="cov8" title="1">resources[defaultSCSIControllerInstanceID] = d
+        *devices = append(*devices, d)
+        return defaultSCSIControllerInstanceID</span>
+}
+
+func (e Envelope) toVirtualDisk(
+        item itemElement,
+        devices object.VirtualDeviceList,
+        resources map[string]types.BaseVirtualDevice) (types.BaseVirtualDevice, error) <span class="cov8" title="1">{
+
+        if item.Parent == nil </span><span class="cov0" title="0">{
+                return nil, fmt.Errorf("missing Parent")
+        }</span>
+
+        <span class="cov8" title="1">r, ok := resources[*item.Parent]
+        if !ok </span><span class="cov0" title="0">{
+                return nil, nil
+        }</span>
+
+        <span class="cov8" title="1">c, ok := r.(types.BaseVirtualController)
+        if !ok </span><span class="cov0" title="0">{
+                return nil, fmt.Errorf("expectedType=%s, actualType=%T",
+                        "types.BaseVirtualController", r)
+        }</span>
+
+        <span class="cov8" title="1">d := devices.CreateDisk(c, types.ManagedObjectReference{}, "")
+
+        d.VirtualDevice.DeviceInfo = &amp;types.Description{
+                Label: item.ElementName,
+        }
+
+        // Find the disk's capacity.
+        var capacityInBytes uint64
+        switch len(item.HostResource) </span>{
+
+        case 0:<span class="cov8" title="1">
+                var allocUnitsSz string
+                if item.AllocationUnits != nil </span><span class="cov8" title="1">{
+                        allocUnitsSz = *item.AllocationUnits
+                }</span>
+                <span class="cov8" title="1">capacityInBytes = uint64(ParseCapacityAllocationUnits(allocUnitsSz))
+                if r := item.VirtualQuantity; r != nil </span><span class="cov8" title="1">{
+                        capacityInBytes *= uint64(*r)
+                }</span>
+
+        case 1:<span class="cov8" title="1">
+                diskID := item.HostResource[0]
+                dd := e.ovfDisk(diskID)
+                if dd == nil </span><span class="cov8" title="1">{
+                        return nil, fmt.Errorf("missing diskID %q", diskID)
+                }</span>
+
+                <span class="cov8" title="1">var allocUnitsSz string
+                if dd.CapacityAllocationUnits != nil </span><span class="cov8" title="1">{
+                        allocUnitsSz = *dd.CapacityAllocationUnits
+                }</span>
+                <span class="cov8" title="1">capacityInBytes = uint64(ParseCapacityAllocationUnits(allocUnitsSz))
+                if capSz := dd.Capacity; capSz != "" </span><span class="cov8" title="1">{
+                        cap, err := strconv.ParseUint(dd.Capacity, 10, 64)
+                        if err != nil </span><span class="cov0" title="0">{
+                                return nil, fmt.Errorf("disk=%s has invalid capacity=%q",
+                                        diskID, capSz)
+                        }</span>
+                        <span class="cov8" title="1">capacityInBytes *= cap</span>
+                }
+
+        default:<span class="cov8" title="1">
+                return nil, fmt.Errorf("multiple HostResource elements")</span>
+        }
+
+        <span class="cov8" title="1">if capacityInBytes &gt; math.MaxInt64 </span><span class="cov0" title="0">{
+                return nil, fmt.Errorf(
+                        "capacityInBytes=%d exceeds math.MaxInt64", capacityInBytes)
+        }</span>
+
+        <span class="cov8" title="1">d.CapacityInBytes = int64(capacityInBytes)
+
+        return d, nil</span>
+}
+
+func (e Envelope) toCDOrDVDDrive(
+        item itemElement,
+        devices object.VirtualDeviceList,
+        resources map[string]types.BaseVirtualDevice) (types.BaseVirtualDevice, error) <span class="cov8" title="1">{
+
+        if item.Parent == nil </span><span class="cov0" title="0">{
+                return nil, fmt.Errorf("missing Parent")
+        }</span>
+
+        <span class="cov8" title="1">r, ok := resources[*item.Parent]
+        if !ok </span><span class="cov0" title="0">{
+                return nil, nil // Parent is unsupported
+        }</span>
+
+        <span class="cov8" title="1">c, ok := r.(types.BaseVirtualController)
+        if !ok </span><span class="cov0" title="0">{
+                return nil, fmt.Errorf("expectedType=%s, actualType=%T",
+                        "*types.VirtualIDEController", r)
+        }</span>
+
+        <span class="cov8" title="1">d, err := devices.CreateCdrom(c)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov8" title="1">return d, nil</span>
+}
+
+func (e Envelope) toSCSIController(
+        item itemElement,
+        devices object.VirtualDeviceList,
+        resources map[string]types.BaseVirtualDevice) (types.BaseVirtualDevice, error) <span class="cov8" title="1">{
+
+        d, err := devices.CreateSCSIController(item.resourceSubType)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov8" title="1">if err := e.setBusNumber(item, d); err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov8" title="1">resources[item.InstanceID] = d
+
+        return d, nil</span>
+}
+
+func (e Envelope) toIDEController(
+        item itemElement,
+        devices object.VirtualDeviceList,
+        resources map[string]types.BaseVirtualDevice) (types.BaseVirtualDevice, error) <span class="cov8" title="1">{
+
+        d, err := devices.CreateIDEController()
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov8" title="1">if err := e.setBusNumber(item, d); err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov8" title="1">resources[item.InstanceID] = d
+        return d, nil</span>
+}
+
+func (e Envelope) toOtherStorage(
+        item itemElement,
+        devices object.VirtualDeviceList,
+        resources map[string]types.BaseVirtualDevice) (types.BaseVirtualDevice, error) <span class="cov8" title="1">{
+
+        switch item.resourceSubType </span>{
+        case ResourceSubTypeSATAAHCI, ResourceSubTypeSATAAHCIAlter:<span class="cov8" title="1">
+                return e.toSATAController(item, devices, resources)</span>
+        case ResourceSubTypeNVMEController:<span class="cov8" title="1">
+                return e.toNVMEController(item, devices, resources)</span>
+        }
+        <span class="cov0" title="0">return nil, errUnsupportedResourceSubtype</span>
+}
+
+func (e Envelope) toSATAController(
+        item itemElement,
+        devices object.VirtualDeviceList,
+        resources map[string]types.BaseVirtualDevice) (types.BaseVirtualDevice, error) <span class="cov8" title="1">{
+
+        d, err := devices.CreateSATAController()
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov8" title="1">if err := e.setBusNumber(item, d); err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov8" title="1">resources[item.InstanceID] = d
+        return d, nil</span>
+}
+
+func (e Envelope) toNVMEController(
+        item itemElement,
+        devices object.VirtualDeviceList,
+        resources map[string]types.BaseVirtualDevice) (types.BaseVirtualDevice, error) <span class="cov8" title="1">{
+
+        d, err := devices.CreateNVMEController()
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov8" title="1">if err := e.setBusNumber(item, d); err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov8" title="1">resources[item.InstanceID] = d
+        return d, nil</span>
+}
+
+func (e Envelope) toUSB(
+        item itemElement,
+        devices object.VirtualDeviceList,
+        resources map[string]types.BaseVirtualDevice) (types.BaseVirtualDevice, error) <span class="cov8" title="1">{
+
+        var d types.BaseVirtualDevice
+
+        vc := types.VirtualController{
+                VirtualDevice: types.VirtualDevice{
+                        Key: devices.NewKey(),
+                },
+        }
+
+        switch item.resourceSubType </span>{
+        case ResourceSubTypeUSBEHCI:<span class="cov8" title="1">
+                c := &amp;types.VirtualUSBController{VirtualController: vc}
+                for i := range item.Config </span><span class="cov8" title="1">{
+                        ic := item.Config[i]
+                        switch ic.Key </span>{
+                        case "autoConnectDevices":<span class="cov8" title="1">
+                                c.AutoConnectDevices = szToBoolPtr(ic.Value)</span>
+                        case "ehciEnabled":<span class="cov8" title="1">
+                                c.EhciEnabled = szToBoolPtr(ic.Value)</span>
+                        }
+                }
+                <span class="cov8" title="1">d = c</span>
+        case ResourceSubTypeUSBXHCI:<span class="cov8" title="1">
+                c := &amp;types.VirtualUSBXHCIController{VirtualController: vc}
+                for i := range item.Config </span><span class="cov8" title="1">{
+                        ic := item.Config[i]
+                        switch ic.Key </span>{
+                        case "autoConnectDevices":<span class="cov8" title="1">
+                                c.AutoConnectDevices = szToBoolPtr(ic.Value)</span>
+                        }
+                }
+                <span class="cov8" title="1">d = c</span>
+        default:<span class="cov0" title="0">
+                return nil, errUnsupportedResourceSubtype</span>
+        }
+
+        <span class="cov8" title="1">if err := e.setBusNumber(item, d); err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov8" title="1">resources[item.InstanceID] = d
+        return d, nil</span>
+}
+
+func (e Envelope) toNetworkInterface(
+        item itemElement,
+        devices object.VirtualDeviceList,
+        _ map[string]types.BaseVirtualDevice) (types.BaseVirtualDevice, error) <span class="cov8" title="1">{
+
+        d, err := devices.CreateEthernetCard(item.resourceSubType, nil)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov8" title="1">nic := d.(types.BaseVirtualEthernetCard).GetVirtualEthernetCard()
+
+        for i := range item.Config </span><span class="cov8" title="1">{
+                c := item.Config[i]
+                switch c.Key </span>{
+                case "wakeOnLanEnabled":<span class="cov8" title="1">
+                        nic.WakeOnLanEnabled = szToBoolPtr(c.Value)</span>
+                case "uptCompatibilityEnabled":<span class="cov8" title="1">
+                        nic.UptCompatibilityEnabled = szToBoolPtr(c.Value)</span>
+                }
+        }
+
+        <span class="cov8" title="1">return d, nil</span>
+}
+
+func (e Envelope) toFloppyDrive(
+        item itemElement,
+        devices object.VirtualDeviceList,
+        resources map[string]types.BaseVirtualDevice) (types.BaseVirtualDevice, error) <span class="cov8" title="1">{
+
+        d, err := devices.CreateFloppy()
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov8" title="1">resources[item.InstanceID] = d
+
+        return d, nil</span>
+}
+
+func (e Envelope) toVideoCard(
+        item itemElement,
+        devices object.VirtualDeviceList,
+        _ map[string]types.BaseVirtualDevice) (types.BaseVirtualDevice, error) <span class="cov8" title="1">{
+
+        d := &amp;types.VirtualMachineVideoCard{
+                VirtualDevice: types.VirtualDevice{
+                        Key: devices.NewKey(),
+                },
+        }
+
+        for i := range item.Config </span><span class="cov8" title="1">{
+                c := item.Config[i]
+                switch c.Key </span>{
+                case "enable3DSupport":<span class="cov8" title="1">
+                        d.Enable3DSupport = szToBoolPtr(c.Value)</span>
+                case "graphicsMemorySizeInKB":<span class="cov8" title="1">
+                        v, err := strconv.ParseInt(c.Value, 10, 64)
+                        if err != nil </span><span class="cov0" title="0">{
+                                return nil, fmt.Errorf("invalid %q=%s", c.Key, c.Value)
+                        }</span>
+                        <span class="cov8" title="1">d.GraphicsMemorySizeInKB = v</span>
+                case "useAutoDetect":<span class="cov8" title="1">
+                        d.UseAutoDetect = szToBoolPtr(c.Value)</span>
+                case "videoRamSizeInKB":<span class="cov8" title="1">
+                        v, err := strconv.ParseInt(c.Value, 10, 64)
+                        if err != nil </span><span class="cov0" title="0">{
+                                return nil, fmt.Errorf("invalid %q=%s", c.Key, c.Value)
+                        }</span>
+                        <span class="cov8" title="1">d.VideoRamSizeInKB = v</span>
+                case "numDisplays":<span class="cov8" title="1">
+                        v, err := strconv.ParseInt(c.Value, 10, 32)
+                        if err != nil </span><span class="cov0" title="0">{
+                                return nil, fmt.Errorf("invalid %q=%s", c.Key, c.Value)
+                        }</span>
+                        <span class="cov8" title="1">d.NumDisplays = int32(v)</span>
+                case "use3dRenderer":<span class="cov8" title="1">
+                        d.Use3dRenderer = c.Value</span>
+                }
+        }
+
+        <span class="cov8" title="1">return d, nil</span>
+}
+
+func (e Envelope) toOther(
+        item itemElement,
+        devices object.VirtualDeviceList,
+        resources map[string]types.BaseVirtualDevice) (types.BaseVirtualDevice, error) <span class="cov8" title="1">{
+
+        switch item.resourceSubType </span>{
+        case ResourceSubTypeVMCI:<span class="cov8" title="1">
+                return e.toVMCI(item, devices, resources)</span>
+        }
+        <span class="cov8" title="1">return nil, errUnsupportedResourceSubtype</span>
+}
+
+func (e Envelope) toVMCI(
+        item itemElement,
+        devices object.VirtualDeviceList,
+        _ map[string]types.BaseVirtualDevice) (types.BaseVirtualDevice, error) <span class="cov8" title="1">{
+
+        d := &amp;types.VirtualMachineVMCIDevice{
+                VirtualDevice: types.VirtualDevice{
+                        Key: devices.NewKey(),
+                },
+        }
+
+        for i := range item.Config </span><span class="cov8" title="1">{
+                c := item.Config[i]
+                switch c.Key </span>{
+                case "allowUnrestrictedCommunication":<span class="cov8" title="1">
+                        d.AllowUnrestrictedCommunication = szToBoolPtr(c.Value)</span>
+                }
+        }
+
+        <span class="cov8" title="1">return d, nil</span>
+}
+
+func (e Envelope) toConfig(
+        dst *configSpec,
+        hw VirtualHardwareSection) <span class="cov8" title="1">{
+
+        for i := range hw.Config </span><span class="cov8" title="1">{
+                c := hw.Config[i]
+                switch c.Key </span>{
+                case "cpuHotAddEnabled":<span class="cov8" title="1">
+                        dst.CpuHotAddEnabled = szToBoolPtr(c.Value)</span>
+                case "cpuHotRemoveEnabled":<span class="cov8" title="1">
+                        dst.CpuHotRemoveEnabled = szToBoolPtr(c.Value)</span>
+                case "bootOptions.efiSecureBootEnabled":<span class="cov8" title="1">
+                        initBootOptions(dst)
+                        dst.BootOptions.EfiSecureBootEnabled = szToBoolPtr(c.Value)</span>
+                case "firmware":<span class="cov8" title="1">
+                        dst.Firmware = c.Value</span>
+                case "flags.vbsEnabled":<span class="cov8" title="1">
+                        initFlags(dst)
+                        dst.Flags.VbsEnabled = szToBoolPtr(c.Value)</span>
+                case "flags.vvtdEnabled":<span class="cov8" title="1">
+                        initFlags(dst)
+                        dst.Flags.VvtdEnabled = szToBoolPtr(c.Value)</span>
+                case "memoryHotAddEnabled":<span class="cov8" title="1">
+                        dst.MemoryHotAddEnabled = szToBoolPtr(c.Value)</span>
+                case "nestedHVEnabled":<span class="cov8" title="1">
+                        dst.NestedHVEnabled = szToBoolPtr(c.Value)</span>
+                case "virtualICH7MPresent":<span class="cov8" title="1">
+                        dst.VirtualICH7MPresent = szToBoolPtr(c.Value)</span>
+                case "virtualSMCPresent":<span class="cov8" title="1">
+                        dst.VirtualSMCPresent = szToBoolPtr(c.Value)</span>
+                case "cpuAllocation.shares.shares":<span class="cov8" title="1">
+                        initCPUAllocationShares(dst)
+                        dst.CpuAllocation.Shares.Shares = szToInt32(c.Value)</span>
+                case "cpuAllocation.shares.level":<span class="cov8" title="1">
+                        initCPUAllocationShares(dst)
+                        dst.CpuAllocation.Shares.Level = types.SharesLevel(c.Value)</span>
+                case "simultaneousThreads":<span class="cov8" title="1">
+                        dst.SimultaneousThreads = szToInt32(c.Value)</span>
+                case "tools.syncTimeWithHost":<span class="cov8" title="1">
+                        initToolsConfig(dst)
+                        dst.Tools.SyncTimeWithHost = szToBoolPtr(c.Value)</span>
+                case "tools.syncTimeWithHostAllowed":<span class="cov8" title="1">
+                        initToolsConfig(dst)
+                        dst.Tools.SyncTimeWithHostAllowed = szToBoolPtr(c.Value)</span>
+                case "tools.afterPowerOn":<span class="cov8" title="1">
+                        initToolsConfig(dst)
+                        dst.Tools.AfterPowerOn = szToBoolPtr(c.Value)</span>
+                case "tools.afterResume":<span class="cov8" title="1">
+                        initToolsConfig(dst)
+                        dst.Tools.AfterResume = szToBoolPtr(c.Value)</span>
+                case "tools.beforeGuestShutdown":<span class="cov8" title="1">
+                        initToolsConfig(dst)
+                        dst.Tools.BeforeGuestShutdown = szToBoolPtr(c.Value)</span>
+                case "tools.beforeGuestStandby":<span class="cov8" title="1">
+                        initToolsConfig(dst)
+                        dst.Tools.BeforeGuestStandby = szToBoolPtr(c.Value)</span>
+                case "tools.toolsUpgradePolicy":<span class="cov8" title="1">
+                        initToolsConfig(dst)
+                        dst.Tools.ToolsUpgradePolicy = c.Value</span>
+                case "powerOpInfo.powerOffType":<span class="cov8" title="1">
+                        initPowerOpInfo(dst)
+                        dst.PowerOpInfo.PowerOffType = c.Value</span>
+                case "powerOpInfo.resetType":<span class="cov8" title="1">
+                        initPowerOpInfo(dst)
+                        dst.PowerOpInfo.ResetType = c.Value</span>
+                case "powerOpInfo.suspendType":<span class="cov8" title="1">
+                        initPowerOpInfo(dst)
+                        dst.PowerOpInfo.SuspendType = c.Value</span>
+                case "powerOpInfo.standbyAction":<span class="cov8" title="1">
+                        initPowerOpInfo(dst)
+                        dst.PowerOpInfo.StandbyAction = c.Value</span>
+                case "vPMCEnabled":<span class="cov8" title="1">
+                        dst.VPMCEnabled = szToBoolPtr(c.Value)</span>
+                }
+        }
+}
+
+func (e Envelope) toExtraConfig(
+        dst *configSpec,
+        hw VirtualHardwareSection) <span class="cov8" title="1">{
+
+        var newEC object.OptionValueList
+        for i := range hw.ExtraConfig </span><span class="cov8" title="1">{
+                newEC = append(newEC, &amp;types.OptionValue{
+                        Key:   hw.ExtraConfig[i].Key,
+                        Value: hw.ExtraConfig[i].Value,
+                })
+        }</span>
+        <span class="cov8" title="1">dst.ExtraConfig = newEC.Join(dst.ExtraConfig...)</span>
+}
+
+func initToolsConfig(dst *configSpec) <span class="cov8" title="1">{
+        if dst.Tools == nil </span><span class="cov8" title="1">{
+                dst.Tools = &amp;types.ToolsConfigInfo{}
+        }</span>
+}
+
+func initPowerOpInfo(dst *configSpec) <span class="cov8" title="1">{
+        if dst.PowerOpInfo == nil </span><span class="cov8" title="1">{
+                dst.PowerOpInfo = &amp;types.VirtualMachineDefaultPowerOpInfo{}
+        }</span>
+}
+
+func initCPUAllocation(dst *configSpec) <span class="cov8" title="1">{
+        if dst.CpuAllocation == nil </span><span class="cov8" title="1">{
+                dst.CpuAllocation = &amp;types.ResourceAllocationInfo{}
+        }</span>
+}
+
+func initCPUAllocationShares(dst *configSpec) <span class="cov8" title="1">{
+        initCPUAllocation(dst)
+        if dst.CpuAllocation.Shares == nil </span><span class="cov8" title="1">{
+                dst.CpuAllocation.Shares = &amp;types.SharesInfo{}
+        }</span>
+}
+
+func initFlags(dst *configSpec) <span class="cov8" title="1">{
+        if dst.Flags == nil </span><span class="cov8" title="1">{
+                dst.Flags = &amp;types.VirtualMachineFlagInfo{}
+        }</span>
+}
+
+func initBootOptions(dst *configSpec) <span class="cov8" title="1">{
+        if dst.BootOptions == nil </span><span class="cov8" title="1">{
+                dst.BootOptions = &amp;types.VirtualMachineBootOptions{}
+        }</span>
+}
+
+func setConnectable(dst types.BaseVirtualDevice, src itemElement) <span class="cov8" title="1">{
+
+        d := dst.GetVirtualDevice()
+        for i := range src.Config </span><span class="cov8" title="1">{
+                c := src.Config[i]
+                switch c.Key </span>{
+                case "connectable.allowGuestControl":<span class="cov8" title="1">
+                        if d.Connectable == nil </span><span class="cov8" title="1">{
+                                d.Connectable = &amp;types.VirtualDeviceConnectInfo{}
+                        }</span>
+                        <span class="cov8" title="1">d.Connectable.AllowGuestControl = szToBool(c.Value)</span>
+                }
+        }
+}
+
+func szToBoolPtr(s string) *bool <span class="cov8" title="1">{
+        if s == "" </span><span class="cov0" title="0">{
+                return nil
+        }</span>
+        <span class="cov8" title="1">b, _ := strconv.ParseBool(s)
+        return &amp;b</span>
+}
+
+func szToBool(s string) bool <span class="cov8" title="1">{
+        b, _ := strconv.ParseBool(s)
+        return b
+}</span>
+
+func szToInt32(s string) int32 <span class="cov8" title="1">{
+        v, _ := strconv.ParseInt(s, 10, 32)
+        return int32(v)
+}</span>
+
+func deref[T any](pT *T) T <span class="cov8" title="1">{
+        var t T
+        if pT != nil </span><span class="cov8" title="1">{
+                t = *pT
+        }</span>
+        <span class="cov8" title="1">return t</span>
+}
+
+func (e Envelope) toVAppConfig(
+        dst *configSpec,
+        configName string,
+        vs *VirtualSystem) error <span class="cov8" title="1">{
+
+        if len(vs.Product) == 0 </span><span class="cov8" title="1">{
+                return nil
+        }</span>
+
+        <span class="cov8" title="1">vapp := &amp;types.VAppConfigSpec{}
+
+        index := 0
+        for i, product := range vs.Product </span><span class="cov8" title="1">{
+                vapp.Product = append(vapp.Product, types.VAppProductSpec{
+                        ArrayUpdateSpec: types.ArrayUpdateSpec{
+                                Operation: types.ArrayUpdateOperationAdd,
+                        },
+                        Info: &amp;types.VAppProductInfo{
+                                Key:         int32(i),
+                                ClassId:     deref(product.Class),
+                                InstanceId:  deref(product.Instance),
+                                Name:        product.Product,
+                                Vendor:      product.Vendor,
+                                Version:     product.Version,
+                                FullVersion: product.FullVersion,
+                                ProductUrl:  product.ProductURL,
+                                VendorUrl:   product.VendorURL,
+                                AppUrl:      product.AppURL,
+                        },
+                })
+
+                for _, p := range product.Property </span><span class="cov8" title="1">{
+                        if p.Configuration != nil &amp;&amp; *p.Configuration != configName </span><span class="cov8" title="1">{
+                                // Skip properties that are not part of the provided
+                                // configuration.
+                                continue</span>
+                        }
+
+                        // Get the default values for the current configuration from the
+                        // list of default values that are per-config.
+                        <span class="cov8" title="1">var value string
+                        if p.Default != nil </span><span class="cov8" title="1">{
+                                value = *p.Default
+                        }</span>
+                        <span class="cov8" title="1">for _, v := range p.Values </span><span class="cov8" title="1">{
+                                if v.Configuration == nil || *v.Configuration == configName </span><span class="cov8" title="1">{
+                                        value = v.Value
+                                        break</span>
+                                }
+                        }
+
+                        <span class="cov8" title="1">if p.UserConfigurable == nil </span><span class="cov8" title="1">{
+                                p.UserConfigurable = types.NewBool(false)
+                        }</span>
+                        <span class="cov8" title="1">np := types.VAppPropertySpec{
+                                ArrayUpdateSpec: types.ArrayUpdateSpec{
+                                        Operation: types.ArrayUpdateOperationAdd,
+                                },
+                                Info: &amp;types.VAppPropertyInfo{
+                                        Key:              int32(index),
+                                        ClassId:          deref(product.Class),
+                                        InstanceId:       deref(product.Instance),
+                                        Id:               p.Key,
+                                        Category:         product.Category,
+                                        Label:            deref(p.Label),
+                                        Type:             p.Type,
+                                        UserConfigurable: p.UserConfigurable,
+                                        DefaultValue:     value,
+                                        Value:            "",
+                                        Description:      deref(p.Description),
+                                },
+                        }
+
+                        vapp.Property = append(vapp.Property, np)
+                        index++</span>
+                }
+        }
+
+        <span class="cov8" title="1">dst.VAppConfig = vapp
+        return nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file2" style="display: none">// © Broadcom. All Rights Reserved.
+// The term "Broadcom" refers to Broadcom Inc. and/or its subsidiaries.
+// SPDX-License-Identifier: Apache-2.0
+
+package ovf
+
+import (
+        "bytes"
+        "fmt"
+
+        "github.com/vmware/govmomi/vim25/xml"
+)
+
+const (
+        ovfEnvHeader = `&lt;Environment
+                xmlns="http://schemas.dmtf.org/ovf/environment/1"
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                xmlns:oe="http://schemas.dmtf.org/ovf/environment/1"
+                xmlns:ve="http://www.vmware.com/schema/ovfenv"
+                oe:id=""
+                ve:esxId="%s"&gt;`
+        ovfEnvPlatformSection = `&lt;PlatformSection&gt;
+                &lt;Kind&gt;%s&lt;/Kind&gt;
+                &lt;Version&gt;%s&lt;/Version&gt;
+                &lt;Vendor&gt;%s&lt;/Vendor&gt;
+                &lt;Locale&gt;%s&lt;/Locale&gt;
+                &lt;/PlatformSection&gt;`
+        ovfEnvPropertyHeader = `&lt;PropertySection&gt;`
+        ovfEnvPropertyEntry  = `&lt;Property oe:key="%s" oe:value="%s"/&gt;`
+        ovfEnvPropertyFooter = `&lt;/PropertySection&gt;`
+        ovfEnvFooter         = `&lt;/Environment&gt;`
+)
+
+type Env struct {
+        XMLName xml.Name `xml:"http://schemas.dmtf.org/ovf/environment/1 Environment" json:"xmlName"`
+        ID      string   `xml:"id,attr" json:"id"`
+        EsxID   string   `xml:"http://www.vmware.com/schema/ovfenv esxId,attr" json:"esxID"`
+
+        Platform *PlatformSection `xml:"PlatformSection" json:"platformSection,omitempty"`
+        Property *PropertySection `xml:"PropertySection" json:"propertySection,omitempty"`
+}
+
+type PlatformSection struct {
+        Kind    string `xml:"Kind" json:"kind,omitempty"`
+        Version string `xml:"Version" json:"version,omitempty"`
+        Vendor  string `xml:"Vendor" json:"vendor,omitempty"`
+        Locale  string `xml:"Locale" json:"locale,omitempty"`
+}
+
+type PropertySection struct {
+        Properties []EnvProperty `xml:"Property" json:"property,omitempty"`
+}
+
+type EnvProperty struct {
+        Key   string `xml:"key,attr" json:"key"`
+        Value string `xml:"value,attr" json:"value,omitempty"`
+}
+
+// Marshal marshals Env to xml by using xml.Marshal.
+func (e Env) Marshal() (string, error) <span class="cov8" title="1">{
+        x, err := xml.Marshal(e)
+        if err != nil </span><span class="cov0" title="0">{
+                return "", err
+        }</span>
+
+        <span class="cov8" title="1">return fmt.Sprintf("%s%s", xml.Header, x), nil</span>
+}
+
+// MarshalManual manually marshals Env to xml suitable for a vApp guest.
+// It exists to overcome the lack of expressiveness in Go's XML namespaces.
+func (e Env) MarshalManual() string <span class="cov8" title="1">{
+        var buffer bytes.Buffer
+
+        buffer.WriteString(xml.Header)
+        buffer.WriteString(fmt.Sprintf(ovfEnvHeader, e.EsxID))
+        buffer.WriteString(fmt.Sprintf(ovfEnvPlatformSection, e.Platform.Kind, e.Platform.Version, e.Platform.Vendor, e.Platform.Locale))
+
+        buffer.WriteString(fmt.Sprint(ovfEnvPropertyHeader))
+        for _, p := range e.Property.Properties </span><span class="cov8" title="1">{
+                buffer.WriteString(fmt.Sprintf(ovfEnvPropertyEntry, p.Key, p.Value))
+        }</span>
+        <span class="cov8" title="1">buffer.WriteString(fmt.Sprint(ovfEnvPropertyFooter))
+
+        buffer.WriteString(fmt.Sprint(ovfEnvFooter))
+
+        return buffer.String()</span>
+}
+</pre>
+		
+		<pre class="file" id="file3" style="display: none">// © Broadcom. All Rights Reserved.
+// The term "Broadcom" refers to Broadcom Inc. and/or its subsidiaries.
+// SPDX-License-Identifier: Apache-2.0
+
+package ovf
+
+import (
+        "fmt"
+)
+
+// Envelope is defined according to
+// https://www.dmtf.org/sites/default/files/standards/documents/DSP0243_2.1.1.pdf.
+//
+// Section 9 describes the parent/child relationships.
+//
+// A VirtualSystem may have zero or more VirtualHardware sections.
+type Envelope struct {
+        References []File `xml:"References&gt;File" json:"references,omitempty"`
+
+        // Package level meta-data
+        Disk             *DiskSection             `xml:"DiskSection,omitempty" json:"diskSection,omitempty"`
+        Network          *NetworkSection          `xml:"NetworkSection,omitempty" json:"networkSection,omitempty"`
+        DeploymentOption *DeploymentOptionSection `xml:"DeploymentOptionSection,omitempty" json:"deploymentOptionSection,omitempty"`
+
+        // Content: A VirtualSystem or a VirtualSystemCollection
+        VirtualSystem           *VirtualSystem           `xml:"VirtualSystem,omitempty" json:"virtualSystem,omitempty"`
+        VirtualSystemCollection *VirtualSystemCollection `xml:"VirtualSystemCollection,omitempty" json:"virtualSystemCollection,omitempty"`
+}
+
+type VirtualSystem struct {
+        Content
+
+        Annotation      *AnnotationSection       `xml:"AnnotationSection,omitempty" json:"annotationSection,omitempty"`
+        Product         []ProductSection         `xml:"ProductSection,omitempty" json:"productSection,omitempty"`
+        Eula            []EulaSection            `xml:"EulaSection,omitempty" json:"eulaSection,omitempty"`
+        OperatingSystem *OperatingSystemSection  `xml:"OperatingSystemSection,omitempty" json:"operatingSystemSection,omitempty"`
+        VirtualHardware []VirtualHardwareSection `xml:"VirtualHardwareSection,omitempty" json:"virtualHardwareSection,omitempty"`
+}
+
+type VirtualSystemCollection struct {
+        Content
+
+        // Collection level meta-data
+        ResourceAllocation *ResourceAllocationSection `xml:"ResourceAllocationSection,omitempty" json:"resourceAllocationSection,omitempty"`
+        Annotation         *AnnotationSection         `xml:"AnnotationSection,omitempty" json:"annotationSection,omitempty"`
+        Product            []ProductSection           `xml:"ProductSection,omitempty" json:"productSection,omitempty"`
+        Eula               []EulaSection              `xml:"EulaSection,omitempty" json:"eulaSection,omitempty"`
+
+        // Content: One or more VirtualSystems
+        VirtualSystem []VirtualSystem `xml:"VirtualSystem,omitempty" json:"virtualSystem,omitempty"`
+}
+
+type File struct {
+        ID          string  `xml:"id,attr" json:"id,omitempty"`
+        Href        string  `xml:"href,attr" json:"href,omitempty"`
+        Size        uint    `xml:"size,attr" json:"size,omitempty"`
+        Compression *string `xml:"compression,attr" json:"compression,omitempty"`
+        ChunkSize   *int    `xml:"chunkSize,attr" json:"chunkSize,omitempty"`
+}
+
+type Content struct {
+        ID   string  `xml:"id,attr" json:"id,omitempty"`
+        Info string  `xml:"Info" json:"info,omitempty"`
+        Name *string `xml:"Name" json:"name,omitempty"`
+}
+
+type Section struct {
+        Required *bool  `xml:"required,attr" json:"required,omitempty"`
+        Info     string `xml:"Info" json:"info,omitempty"`
+        Category string `xml:"Category" json:"category,omitempty"`
+}
+
+type AnnotationSection struct {
+        Section
+
+        Annotation string `xml:"Annotation" json:"annotation,omitempty"`
+}
+
+type ProductSection struct {
+        Section
+
+        Class    *string `xml:"class,attr" json:"class,omitempty"`
+        Instance *string `xml:"instance,attr" json:"instance,omitempty"`
+
+        Product     string     `xml:"Product" json:"product,omitempty"`
+        Vendor      string     `xml:"Vendor" json:"vendor,omitempty"`
+        Version     string     `xml:"Version" json:"version,omitempty"`
+        FullVersion string     `xml:"FullVersion" json:"fullVersion,omitempty"`
+        ProductURL  string     `xml:"ProductUrl" json:"productUrl,omitempty"`
+        VendorURL   string     `xml:"VendorUrl" json:"vendorUrl,omitempty"`
+        AppURL      string     `xml:"AppUrl" json:"appUrl,omitempty"`
+        Property    []Property `xml:"Property" json:"property,omitempty"`
+}
+
+func (p ProductSection) Key(prop Property) string <span class="cov0" title="0">{
+        // From OVF spec, section 9.5.1:
+        // key-value-env = [class-value "."] key-value-prod ["." instance-value]
+
+        k := prop.Key
+        if p.Class != nil </span><span class="cov0" title="0">{
+                k = fmt.Sprintf("%s.%s", *p.Class, k)
+        }</span>
+        <span class="cov0" title="0">if p.Instance != nil </span><span class="cov0" title="0">{
+                k = fmt.Sprintf("%s.%s", k, *p.Instance)
+        }</span>
+        <span class="cov0" title="0">return k</span>
+}
+
+type Property struct {
+        Key              string  `xml:"key,attr" json:"key,omitempty"`
+        Type             string  `xml:"type,attr" json:"type,omitempty"`
+        Qualifiers       *string `xml:"qualifiers,attr" json:"qualifiers,omitempty"`
+        UserConfigurable *bool   `xml:"userConfigurable,attr" json:"userConfigurable,omitempty"`
+        Default          *string `xml:"value,attr" json:"default,omitempty"`
+        Password         *bool   `xml:"password,attr" json:"password,omitempty"`
+        Configuration    *string `xml:"configuration,attr" json:"configuration,omitempty"`
+
+        Label       *string `xml:"Label" json:"label,omitempty"`
+        Description *string `xml:"Description" json:"description,omitempty"`
+
+        Values []PropertyConfigurationValue `xml:"Value" json:"value,omitempty"`
+}
+
+type PropertyConfigurationValue struct {
+        Value         string  `xml:"value,attr" json:"value,omitempty"`
+        Configuration *string `xml:"configuration,attr" json:"configuration,omitempty"`
+}
+
+type NetworkSection struct {
+        Section
+
+        Networks []Network `xml:"Network" json:"network,omitempty"`
+}
+
+type Network struct {
+        Name string `xml:"name,attr" json:"name,omitempty"`
+
+        Description string `xml:"Description" json:"description,omitempty"`
+}
+
+type DiskSection struct {
+        Section
+
+        Disks []VirtualDiskDesc `xml:"Disk" json:"disk,omitempty"`
+}
+
+type VirtualDiskDesc struct {
+        DiskID                  string  `xml:"diskId,attr" json:"diskId,omitempty"`
+        FileRef                 *string `xml:"fileRef,attr" json:"fileRef,omitempty"`
+        Capacity                string  `xml:"capacity,attr" json:"capacity,omitempty"`
+        CapacityAllocationUnits *string `xml:"capacityAllocationUnits,attr" json:"capacityAllocationUnits,omitempty"`
+        Format                  *string `xml:"format,attr" json:"format,omitempty"`
+        PopulatedSize           *int    `xml:"populatedSize,attr" json:"populatedSize,omitempty"`
+        ParentRef               *string `xml:"parentRef,attr" json:"parentRef,omitempty"`
+}
+
+type OperatingSystemSection struct {
+        Section
+
+        ID      int16   `xml:"id,attr" json:"id"`
+        Version *string `xml:"version,attr" json:"version,omitempty"`
+        OSType  *string `xml:"osType,attr" json:"osType,omitempty"`
+
+        Description *string `xml:"Description" json:"description,omitempty"`
+}
+
+type EulaSection struct {
+        Section
+
+        License string `xml:"License" json:"license,omitempty"`
+}
+
+type Config struct {
+        Required *bool  `xml:"required,attr" json:"required,omitempty"`
+        Key      string `xml:"key,attr" json:"key,omitempty"`
+        Value    string `xml:"value,attr" json:"value,omitempty"`
+}
+
+type VirtualHardwareSection struct {
+        Section
+
+        ID        *string `xml:"id,attr" json:"id"`
+        Transport *string `xml:"transport,attr" json:"transport,omitempty"`
+
+        System          *VirtualSystemSettingData        `xml:"System" json:"system,omitempty"`
+        Item            []ResourceAllocationSettingData  `xml:"Item" json:"item,omitempty"`
+        EthernetPortItem []EthernetPortAllocationSettingData `xml:"EthernetPortItem" json:"ethernetPortItem,omitempty"`
+        StorageItem     []StorageAllocationSettingData   `xml:"StorageItem" json:"storageItem,omitempty"`
+        Config          []Config                         `xml:"Config" json:"config,omitempty"`
+        ExtraConfig     []Config                         `xml:"ExtraConfig" json:"extraConfig,omitempty"`
+}
+
+// EthernetPortAllocationSettingData is the OVF envelope wrapper for
+// CIM_EthernetPortAllocationSettingData (DSP0243 §8.1).
+type EthernetPortAllocationSettingData struct {
+        CIMEthernetPortAllocationSettingData
+
+        Required      *bool    `xml:"required,attr" json:"required,omitempty"`
+        Configuration *string  `xml:"configuration,attr" json:"configuration,omitempty"`
+        Bound         *string  `xml:"bound,attr" json:"bound,omitempty"`
+        Config        []Config `xml:"Config" json:"config,omitempty"`
+}
+
+type VirtualSystemSettingData struct {
+        CIMVirtualSystemSettingData
+}
+
+type ResourceAllocationSettingData struct {
+        CIMResourceAllocationSettingData
+
+        Required       *bool           `xml:"required,attr" json:"required,omitempty"`
+        Configuration  *string         `xml:"configuration,attr" json:"configuration,omitempty"`
+        Bound          *string         `xml:"bound,attr" json:"bound,omitempty"`
+        Config         []Config        `xml:"Config" json:"config,omitempty"`
+        CoresPerSocket *CoresPerSocket `xml:"CoresPerSocket" json:"coresPerSocket,omitempty"`
+}
+
+type StorageAllocationSettingData struct {
+        CIMStorageAllocationSettingData
+
+        Required      *bool   `xml:"required,attr" json:"required,omitempty"`
+        Configuration *string `xml:"configuration,attr" json:"configuration,omitempty"`
+        Bound         *string `xml:"bound,attr" json:"bound,omitempty"`
+}
+
+type ResourceAllocationSection struct {
+        Section
+
+        Item []ResourceAllocationSettingData `xml:"Item" json:"item,omitempty"`
+}
+
+type DeploymentOptionSection struct {
+        Section
+
+        Configuration []DeploymentOptionConfiguration `xml:"Configuration" json:"configuration,omitempty"`
+}
+
+type DeploymentOptionConfiguration struct {
+        ID      string `xml:"id,attr" json:"id"`
+        Default *bool  `xml:"default,attr" json:"default,omitempty"`
+
+        Label       string `xml:"Label" json:"label,omitempty"`
+        Description string `xml:"Description" json:"description,omitempty"`
+}
+
+type CoresPerSocket struct {
+        Required *bool `xml:"required,attr" json:"required,omitempty"`
+        Value    int32 `xml:",chardata" json:"value,omitempty"`
+}
+</pre>
+		
+		<pre class="file" id="file4" style="display: none">// © Broadcom. All Rights Reserved.
+// The term "Broadcom" refers to Broadcom Inc. and/or its subsidiaries.
+// SPDX-License-Identifier: Apache-2.0
+
+package importer
+
+import (
+        "archive/tar"
+        "bytes"
+        "context"
+        "errors"
+        "fmt"
+        "io"
+        "net/url"
+        "os"
+        "path"
+        "path/filepath"
+        "strings"
+
+        "github.com/vmware/govmomi/ovf"
+        "github.com/vmware/govmomi/vim25"
+        "github.com/vmware/govmomi/vim25/soap"
+)
+
+func ReadOvf(fpath string, a Archive) ([]byte, error) <span class="cov0" title="0">{
+        r, _, err := a.Open(fpath)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov0" title="0">defer r.Close()
+
+        return io.ReadAll(r)</span>
+}
+
+func ReadEnvelope(data []byte) (*ovf.Envelope, error) <span class="cov0" title="0">{
+        e, err := ovf.Unmarshal(bytes.NewReader(data))
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, fmt.Errorf("failed to parse ovf: %s", err)
+        }</span>
+
+        <span class="cov0" title="0">return e, nil</span>
+}
+
+type Archive interface {
+        Open(string) (io.ReadCloser, int64, error)
+}
+
+type TapeArchive struct {
+        Path string
+        Opener
+}
+
+type TapeArchiveEntry struct {
+        io.Reader
+        f io.Closer
+
+        Name string
+}
+
+func (t *TapeArchiveEntry) Close() error <span class="cov0" title="0">{
+        return t.f.Close()
+}</span>
+
+func (t *TapeArchive) Open(name string) (io.ReadCloser, int64, error) <span class="cov0" title="0">{
+        f, _, err := t.OpenFile(t.Path)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, 0, err
+        }</span>
+
+        <span class="cov0" title="0">r := tar.NewReader(f)
+
+        for </span><span class="cov0" title="0">{
+                h, err := r.Next()
+                if err == io.EOF </span><span class="cov0" title="0">{
+                        break</span>
+                }
+                <span class="cov0" title="0">if err != nil </span><span class="cov0" title="0">{
+                        return nil, 0, err
+                }</span>
+
+                <span class="cov0" title="0">matched, err := path.Match(name, path.Base(h.Name))
+                if err != nil </span><span class="cov0" title="0">{
+                        return nil, 0, err
+                }</span>
+
+                <span class="cov0" title="0">if matched </span><span class="cov0" title="0">{
+                        return &amp;TapeArchiveEntry{r, f, h.Name}, h.Size, nil
+                }</span>
+        }
+
+        <span class="cov0" title="0">_ = f.Close()
+
+        return nil, 0, os.ErrNotExist</span>
+}
+
+type FileArchive struct {
+        Path string
+        Opener
+}
+
+func (t *FileArchive) Open(name string) (io.ReadCloser, int64, error) <span class="cov0" title="0">{
+        fpath := name
+        if name != t.Path </span><span class="cov0" title="0">{
+                if IsRemotePath(t.Path) </span><span class="cov0" title="0">{
+                        index := strings.LastIndex(t.Path, "/")
+                        if index != -1 </span><span class="cov0" title="0">{
+                                fpath = t.Path[:index] + "/" + name
+                        }</span>
+                } else<span class="cov0" title="0"> if !filepath.IsAbs(name) </span><span class="cov0" title="0">{
+                        fpath = filepath.Join(filepath.Dir(t.Path), name)
+                }</span>
+        }
+
+        <span class="cov0" title="0">return t.OpenFile(fpath)</span>
+}
+
+type Opener struct {
+        *vim25.Client
+}
+
+func IsRemotePath(path string) bool <span class="cov0" title="0">{
+        if strings.HasPrefix(path, "http://") || strings.HasPrefix(path, "https://") </span><span class="cov0" title="0">{
+                return true
+        }</span>
+        <span class="cov0" title="0">return false</span>
+}
+
+func (o Opener) OpenLocal(path string) (io.ReadCloser, int64, error) <span class="cov0" title="0">{
+        f, err := os.Open(filepath.Clean(path))
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, 0, err
+        }</span>
+
+        <span class="cov0" title="0">s, err := f.Stat()
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, 0, err
+        }</span>
+
+        <span class="cov0" title="0">return f, s.Size(), nil</span>
+}
+
+func (o Opener) OpenFile(path string) (io.ReadCloser, int64, error) <span class="cov0" title="0">{
+        if IsRemotePath(path) </span><span class="cov0" title="0">{
+                return o.OpenRemote(path)
+        }</span>
+        <span class="cov0" title="0">return o.OpenLocal(path)</span>
+}
+
+func (o Opener) OpenRemote(link string) (io.ReadCloser, int64, error) <span class="cov0" title="0">{
+        if o.Client == nil </span><span class="cov0" title="0">{
+                return nil, 0, errors.New("remote path not supported")
+        }</span>
+
+        <span class="cov0" title="0">u, err := url.Parse(link)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, 0, err
+        }</span>
+
+        <span class="cov0" title="0">return o.Download(context.Background(), u, &amp;soap.DefaultDownload)</span>
+}
+</pre>
+		
+		<pre class="file" id="file5" style="display: none">// © Broadcom. All Rights Reserved.
+// The term "Broadcom" refers to Broadcom Inc. and/or its subsidiaries.
+// SPDX-License-Identifier: Apache-2.0
+
+package importer
+
+import (
+        "fmt"
+        "path"
+)
+
+type importable struct {
+        localPath  string
+        remotePath string
+}
+
+func (i importable) Ext() string <span class="cov0" title="0">{
+        return path.Ext(i.localPath)
+}</span>
+
+func (i importable) Base() string <span class="cov0" title="0">{
+        return path.Base(i.localPath)
+}</span>
+
+func (i importable) BaseClean() string <span class="cov0" title="0">{
+        b := i.Base()
+        e := i.Ext()
+        return b[:len(b)-len(e)]
+}</span>
+
+func (i importable) RemoteSrcVMDK() string <span class="cov0" title="0">{
+        file := fmt.Sprintf("%s-src.vmdk", i.BaseClean())
+        return i.toRemotePath(file)
+}</span>
+
+func (i importable) RemoteDstVMDK() string <span class="cov0" title="0">{
+        file := fmt.Sprintf("%s.vmdk", i.BaseClean())
+        return i.toRemotePath(file)
+}</span>
+
+func (i importable) toRemotePath(p string) string <span class="cov0" title="0">{
+        if i.remotePath == "" </span><span class="cov0" title="0">{
+                return p
+        }</span>
+
+        <span class="cov0" title="0">return path.Join(i.remotePath, p)</span>
+}
+</pre>
+		
+		<pre class="file" id="file6" style="display: none">// © Broadcom. All Rights Reserved.
+// The term "Broadcom" refers to Broadcom Inc. and/or its subsidiaries.
+// SPDX-License-Identifier: Apache-2.0
+
+package importer
+
+import (
+        "bytes"
+        "context"
+        "errors"
+        "fmt"
+        "path"
+        "path/filepath"
+        "strings"
+
+        "github.com/vmware/govmomi/find"
+        "github.com/vmware/govmomi/nfc"
+        "github.com/vmware/govmomi/object"
+        "github.com/vmware/govmomi/ovf"
+        "github.com/vmware/govmomi/task"
+        "github.com/vmware/govmomi/vapi/library"
+        "github.com/vmware/govmomi/vim25"
+        "github.com/vmware/govmomi/vim25/progress"
+        "github.com/vmware/govmomi/vim25/soap"
+        "github.com/vmware/govmomi/vim25/types"
+)
+
+type Importer struct {
+        Log progress.LogFunc
+
+        Name           string
+        VerifyManifest bool
+        Hidden         bool
+
+        Client *vim25.Client
+        Finder *find.Finder
+        Sinker progress.Sinker
+
+        Datacenter   *object.Datacenter
+        Datastore    *object.Datastore
+        ResourcePool *object.ResourcePool
+        Host         *object.HostSystem
+        Folder       *object.Folder
+
+        Archive  Archive
+        Manifest map[string]*library.Checksum
+}
+
+func (imp *Importer) manifestPath(fpath string) string <span class="cov8" title="1">{
+        base := filepath.Base(fpath)
+        ext := filepath.Ext(base)
+        return filepath.Join(filepath.Dir(fpath), strings.Replace(base, ext, ".mf", 1))
+}</span>
+
+func (imp *Importer) ReadManifest(fpath string) error <span class="cov0" title="0">{
+        mf, _, err := imp.Archive.Open(imp.manifestPath(fpath))
+        if err != nil </span><span class="cov0" title="0">{
+                msg := fmt.Sprintf("failed to read manifest %q: %s", mf, err)
+                return errors.New(msg)
+        }</span>
+        <span class="cov0" title="0">imp.Manifest, err = library.ReadManifest(mf)
+        _ = mf.Close()
+        return err</span>
+}
+
+func (imp *Importer) ImportVApp(ctx context.Context, fpath string, opts Options) (*nfc.LeaseInfo, *nfc.Lease, error) <span class="cov0" title="0">{
+        o, err := ReadOvf(fpath, imp.Archive)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, nil, err
+        }</span>
+
+        <span class="cov0" title="0">e, err := ReadEnvelope(o)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, nil, fmt.Errorf("failed to parse ovf: %s", err)
+        }</span>
+
+        <span class="cov0" title="0">if e.VirtualSystem != nil </span><span class="cov0" title="0">{
+                if e.VirtualSystem != nil </span><span class="cov0" title="0">{
+                        if opts.Name == nil </span><span class="cov0" title="0">{
+                                opts.Name = &amp;e.VirtualSystem.ID
+                                if e.VirtualSystem.Name != nil </span><span class="cov0" title="0">{
+                                        opts.Name = e.VirtualSystem.Name
+                                }</span>
+                        }
+                }
+                <span class="cov0" title="0">if imp.Hidden </span><span class="cov0" title="0">{
+                        // TODO: userConfigurable is optional and defaults to false, so we should *add* userConfigurable=true
+                        // if not set for a Property. But, there'd be a bunch more work involved to preserve other data in doing
+                        // a complete xml.Marshal of the .ovf
+                        o = bytes.ReplaceAll(o, []byte(`userConfigurable="false"`), []byte(`userConfigurable="true"`))
+                }</span>
+        }
+
+        <span class="cov0" title="0">name := "Govc Virtual Appliance"
+        if opts.Name != nil </span><span class="cov0" title="0">{
+                name = *opts.Name
+        }</span>
+
+        <span class="cov0" title="0">nmap, err := imp.NetworkMap(ctx, e, opts.NetworkMapping)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, nil, err
+        }</span>
+
+        <span class="cov0" title="0">cisp := types.OvfCreateImportSpecParams{
+                DiskProvisioning:   opts.DiskProvisioning,
+                EntityName:         name,
+                IpAllocationPolicy: opts.IPAllocationPolicy,
+                IpProtocol:         opts.IPProtocol,
+                OvfManagerCommonParams: types.OvfManagerCommonParams{
+                        DeploymentOption: opts.Deployment,
+                        Locale:           "US"},
+                PropertyMapping: OVFMap(opts.PropertyMapping),
+                NetworkMapping:  nmap,
+        }
+
+        m := ovf.NewManager(imp.Client)
+        spec, err := m.CreateImportSpec(ctx, string(o), imp.ResourcePool, imp.Datastore, &amp;cisp)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, nil, err
+        }</span>
+        <span class="cov0" title="0">if spec.Error != nil </span><span class="cov0" title="0">{
+                return nil, nil, &amp;task.Error{LocalizedMethodFault: &amp;spec.Error[0]}
+        }</span>
+        <span class="cov0" title="0">if spec.Warning != nil </span><span class="cov0" title="0">{
+                for _, w := range spec.Warning </span><span class="cov0" title="0">{
+                        _, _ = imp.Log(fmt.Sprintf("Warning: %s\n", w.LocalizedMessage))
+                }</span>
+        }
+
+        <span class="cov0" title="0">if opts.Annotation != "" </span><span class="cov0" title="0">{
+                switch s := spec.ImportSpec.(type) </span>{
+                case *types.VirtualMachineImportSpec:<span class="cov0" title="0">
+                        s.ConfigSpec.Annotation = opts.Annotation</span>
+                case *types.VirtualAppImportSpec:<span class="cov0" title="0">
+                        s.VAppConfigSpec.Annotation = opts.Annotation</span>
+                }
+        }
+
+        <span class="cov0" title="0">if imp.VerifyManifest </span><span class="cov0" title="0">{
+                if err := imp.ReadManifest(fpath); err != nil </span><span class="cov0" title="0">{
+                        return nil, nil, err
+                }</span>
+        }
+
+        <span class="cov0" title="0">lease, err := imp.ResourcePool.ImportVApp(ctx, spec.ImportSpec, imp.Folder, imp.Host)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, nil, err
+        }</span>
+
+        <span class="cov0" title="0">info, err := lease.Wait(ctx, spec.FileItem)
+        if err != nil </span><span class="cov0" title="0">{
+                _ = lease.Abort(ctx, nil)
+                return nil, nil, err
+        }</span>
+
+        <span class="cov0" title="0">return info, lease, nil</span>
+}
+
+func (imp *Importer) Import(ctx context.Context, fpath string, opts Options) (*types.ManagedObjectReference, error) <span class="cov0" title="0">{
+        info, lease, err := imp.ImportVApp(ctx, fpath, opts)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">u := lease.StartUpdater(ctx, info)
+        defer u.Done()
+
+        for _, i := range info.Items </span><span class="cov0" title="0">{
+                if err := imp.Upload(ctx, lease, i); err != nil </span><span class="cov0" title="0">{
+                        _ = lease.Abort(ctx, &amp;types.LocalizedMethodFault{
+                                Fault: &amp;types.FileFault{
+                                        File: i.Path,
+                                },
+                        })
+                        return nil, err
+                }</span>
+        }
+
+        <span class="cov0" title="0">return &amp;info.Entity, lease.Complete(ctx)</span>
+}
+
+func (imp *Importer) NetworkMap(ctx context.Context, e *ovf.Envelope, networks []Network) ([]types.OvfNetworkMapping, error) <span class="cov0" title="0">{
+        var nmap []types.OvfNetworkMapping
+        for _, m := range networks </span><span class="cov0" title="0">{
+                if m.Network == "" </span><span class="cov0" title="0">{
+                        continue</span> // Not set, let vSphere choose the default network
+                }
+                <span class="cov0" title="0">if err := ValidateNetwork(e, m); err != nil &amp;&amp; imp.Log != nil </span><span class="cov0" title="0">{
+                        _, _ = imp.Log(err.Error() + "\n")
+                }</span>
+
+                <span class="cov0" title="0">var ref types.ManagedObjectReference
+
+                net, err := imp.Finder.Network(ctx, m.Network)
+                if err != nil </span><span class="cov0" title="0">{
+                        switch err.(type) </span>{
+                        case *find.NotFoundError:<span class="cov0" title="0">
+                                if !ref.FromString(m.Network) </span><span class="cov0" title="0">{
+                                        return nil, err
+                                }</span> // else this is a raw MO ref
+                        default:<span class="cov0" title="0">
+                                return nil, err</span>
+                        }
+                } else<span class="cov0" title="0"> {
+                        ref = net.Reference()
+                }</span>
+
+                <span class="cov0" title="0">nmap = append(nmap, types.OvfNetworkMapping{
+                        Name:    m.Name,
+                        Network: ref,
+                })</span>
+        }
+
+        <span class="cov0" title="0">return nmap, nil</span>
+}
+
+func OVFMap(op []Property) (p []types.KeyValue) <span class="cov0" title="0">{
+        for _, v := range op </span><span class="cov0" title="0">{
+                p = append(p, types.KeyValue{
+                        Key:   v.Key,
+                        Value: v.Value,
+                })
+        }</span>
+
+        <span class="cov0" title="0">return</span>
+}
+
+func ValidateNetwork(e *ovf.Envelope, net Network) error <span class="cov0" title="0">{
+        var names []string
+
+        if e.Network != nil </span><span class="cov0" title="0">{
+                for _, n := range e.Network.Networks </span><span class="cov0" title="0">{
+                        if n.Name == net.Name </span><span class="cov0" title="0">{
+                                return nil
+                        }</span>
+                        <span class="cov0" title="0">names = append(names, n.Name)</span>
+                }
+        }
+
+        <span class="cov0" title="0">return fmt.Errorf("warning: invalid NetworkMapping.Name=%q, valid names=%s", net.Name, names)</span>
+}
+
+func ValidateChecksum(ctx context.Context, lease *nfc.Lease, sum *library.Checksum, file string, key string) error <span class="cov0" title="0">{
+        // Perform the checksum match eagerly, after each file upload, instead
+        // of after uploading all the files, to provide fail-fast behavior.
+        // (Trade-off here is multiple GetManifest() API calls to the server.)
+        manifests, err := lease.GetManifest(ctx)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+        <span class="cov0" title="0">for _, m := range manifests </span><span class="cov0" title="0">{
+                if m.Key == key </span><span class="cov0" title="0">{
+                        // Compare server-side computed checksum of uploaded file
+                        // against the client's manifest entry (assuming client's
+                        // manifest has correct checksums - client doesn't compute
+                        // checksum of the file before uploading).
+
+                        // Try matching sha1 first (newer versions have moved to sha256).
+                        if strings.ToUpper(sum.Algorithm) == "SHA1" </span><span class="cov0" title="0">{
+                                if sum.Checksum != m.Sha1 </span><span class="cov0" title="0">{
+                                        msg := fmt.Sprintf("manifest checksum %v mismatch with uploaded checksum %v for file %v",
+                                                sum.Checksum, m.Sha1, file)
+                                        return errors.New(msg)
+                                }</span>
+                                // Uploaded file checksum computed by server matches with local manifest entry.
+                                <span class="cov0" title="0">return nil</span>
+                        }
+                        // If not sha1, check for other types (in a separate field).
+                        <span class="cov0" title="0">if !strings.EqualFold(sum.Algorithm, m.ChecksumType) </span><span class="cov0" title="0">{
+                                msg := fmt.Sprintf("manifest checksum type %v mismatch with uploaded checksum type %v for file %v",
+                                        sum.Algorithm, m.ChecksumType, file)
+                                return errors.New(msg)
+                        }</span>
+                        <span class="cov0" title="0">if !strings.EqualFold(sum.Checksum, m.Checksum) </span><span class="cov0" title="0">{
+                                msg := fmt.Sprintf("manifest checksum %v mismatch with uploaded checksum %v for file %v",
+                                        sum.Checksum, m.Checksum, file)
+                                return errors.New(msg)
+                        }</span>
+                        // Uploaded file checksum computed by server matches with local manifest entry.
+                        <span class="cov0" title="0">return nil</span>
+                }
+        }
+        <span class="cov0" title="0">msg := fmt.Sprintf("missing manifest entry on server for uploaded file %v (key %v), manifests=%#v", file, key, manifests)
+        return errors.New(msg)</span>
+}
+
+func (imp *Importer) Upload(ctx context.Context, lease *nfc.Lease, item nfc.FileItem) error <span class="cov0" title="0">{
+        file := item.Path
+
+        f, size, err := imp.Archive.Open(file)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+        <span class="cov0" title="0">defer f.Close()
+
+        logger := progress.NewProgressLogger(imp.Log, fmt.Sprintf("Uploading %s... ", path.Base(file)))
+        defer logger.Wait()
+
+        opts := soap.Upload{
+                ContentLength: size,
+                Progress:      logger,
+        }
+
+        err = lease.Upload(ctx, item, f, opts)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov0" title="0">if imp.VerifyManifest </span><span class="cov0" title="0">{
+                mapImportKeyToKey := func(urls []types.HttpNfcLeaseDeviceUrl, importKey string) string </span><span class="cov0" title="0">{
+                        for _, url := range urls </span><span class="cov0" title="0">{
+                                if url.ImportKey == importKey </span><span class="cov0" title="0">{
+                                        return url.Key
+                                }</span>
+                        }
+                        <span class="cov0" title="0">return ""</span>
+                }
+                <span class="cov0" title="0">leaseInfo, err := lease.Wait(ctx, nil)
+                if err != nil </span><span class="cov0" title="0">{
+                        return err
+                }</span>
+                <span class="cov0" title="0">sum, ok := imp.Manifest[file]
+                if !ok </span><span class="cov0" title="0">{
+                        return fmt.Errorf("missing checksum for %v in manifest file", file)
+                }</span>
+                <span class="cov0" title="0">return ValidateChecksum(ctx, lease, sum, file, mapImportKeyToKey(leaseInfo.DeviceUrl, item.DeviceId))</span>
+        }
+        <span class="cov0" title="0">return nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file7" style="display: none">// © Broadcom. All Rights Reserved.
+// The term "Broadcom" refers to Broadcom Inc. and/or its subsidiaries.
+// SPDX-License-Identifier: Apache-2.0
+
+package importer
+
+import (
+        "encoding/json"
+
+        "github.com/vmware/govmomi/ovf"
+        "github.com/vmware/govmomi/vim25/types"
+)
+
+type KeyValue struct {
+        Key   string
+        Value string
+}
+
+// case insensitive for Key + Value
+func (kv *KeyValue) UnmarshalJSON(b []byte) error <span class="cov8" title="1">{
+        e := struct {
+                types.KeyValue
+                Key   *string
+                Value *string
+        }{
+                types.KeyValue{}, &amp;kv.Key, &amp;kv.Value,
+        }
+
+        err := json.Unmarshal(b, &amp;e)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">if kv.Key == "" </span><span class="cov8" title="1">{
+                kv.Key = e.KeyValue.Key // "key"
+        }</span>
+
+        <span class="cov8" title="1">if kv.Value == "" </span><span class="cov8" title="1">{
+                kv.Value = e.KeyValue.Value // "value"
+        }</span>
+
+        <span class="cov8" title="1">return nil</span>
+}
+
+type Property struct {
+        KeyValue
+        Spec *ovf.Property `json:",omitempty"`
+}
+
+type Network struct {
+        Name    string
+        Network string
+}
+
+type Options struct {
+        AllDeploymentOptions []string `json:",omitempty"`
+        Deployment           string   `json:",omitempty"`
+
+        AllDiskProvisioningOptions []string `json:",omitempty"`
+        DiskProvisioning           string
+
+        AllIPAllocationPolicyOptions []string `json:",omitempty"`
+        IPAllocationPolicy           string
+
+        AllIPProtocolOptions []string `json:",omitempty"`
+        IPProtocol           string
+
+        PropertyMapping []Property `json:",omitempty"`
+
+        NetworkMapping []Network `json:",omitempty"`
+
+        Annotation string `json:",omitempty"`
+
+        MarkAsTemplate bool
+        PowerOn        bool
+        InjectOvfEnv   bool
+        WaitForIP      bool
+        Name           *string
+}
+</pre>
+		
+		<pre class="file" id="file8" style="display: none">// © Broadcom. All Rights Reserved.
+// The term "Broadcom" refers to Broadcom Inc. and/or its subsidiaries.
+// SPDX-License-Identifier: Apache-2.0
+
+package importer
+
+import (
+        "golang.org/x/text/cases"
+        "golang.org/x/text/language"
+
+        "github.com/vmware/govmomi/ovf"
+        "github.com/vmware/govmomi/vim25/types"
+)
+
+var (
+        allDiskProvisioningOptions = types.OvfCreateImportSpecParamsDiskProvisioningType("").Strings()
+
+        allIPAllocationPolicyOptions = types.VAppIPAssignmentInfoIpAllocationPolicy("").Strings()
+
+        allIPProtocolOptions = types.VAppIPAssignmentInfoProtocols("").Strings()
+)
+
+func SpecMap(e *ovf.Envelope, hidden, verbose bool) (res []Property) <span class="cov0" title="0">{
+        if e == nil || e.VirtualSystem == nil </span><span class="cov0" title="0">{
+                return nil
+        }</span>
+
+        <span class="cov0" title="0">for _, p := range e.VirtualSystem.Product </span><span class="cov0" title="0">{
+                for i, v := range p.Property </span><span class="cov0" title="0">{
+                        if v.UserConfigurable == nil </span><span class="cov0" title="0">{
+                                continue</span>
+                        }
+                        <span class="cov0" title="0">if !*v.UserConfigurable &amp;&amp; !hidden </span><span class="cov0" title="0">{
+                                continue</span>
+                        }
+
+                        <span class="cov0" title="0">d := ""
+                        if v.Default != nil </span><span class="cov0" title="0">{
+                                d = *v.Default
+                        }</span>
+
+                        // vSphere only accept True/False as boolean values for some reason
+                        <span class="cov0" title="0">if v.Type == "boolean" </span><span class="cov0" title="0">{
+                                d = cases.Title(language.Und).String(d)
+                        }</span>
+
+                        <span class="cov0" title="0">np := Property{KeyValue: KeyValue{Key: p.Key(v), Value: d}}
+
+                        if verbose </span><span class="cov0" title="0">{
+                                np.Spec = &amp;p.Property[i]
+                        }</span>
+
+                        <span class="cov0" title="0">res = append(res, np)</span>
+                }
+        }
+
+        <span class="cov0" title="0">return</span>
+}
+
+func Spec(fpath string, a Archive, hidden, verbose bool) (*Options, error) <span class="cov0" title="0">{
+        e := &amp;ovf.Envelope{}
+        if fpath != "" </span><span class="cov0" title="0">{
+                d, err := ReadOvf(fpath, a)
+                if err != nil </span><span class="cov0" title="0">{
+                        return nil, err
+                }</span>
+
+                <span class="cov0" title="0">if e, err = ReadEnvelope(d); err != nil </span><span class="cov0" title="0">{
+                        return nil, err
+                }</span>
+        }
+
+        <span class="cov0" title="0">var deploymentOptions []string
+        if e.DeploymentOption != nil &amp;&amp; e.DeploymentOption.Configuration != nil </span><span class="cov0" title="0">{
+                // add default first
+                for _, c := range e.DeploymentOption.Configuration </span><span class="cov0" title="0">{
+                        if c.Default != nil &amp;&amp; *c.Default </span><span class="cov0" title="0">{
+                                deploymentOptions = append(deploymentOptions, c.ID)
+                        }</span>
+                }
+
+                <span class="cov0" title="0">for _, c := range e.DeploymentOption.Configuration </span><span class="cov0" title="0">{
+                        if c.Default == nil || !*c.Default </span><span class="cov0" title="0">{
+                                deploymentOptions = append(deploymentOptions, c.ID)
+                        }</span>
+                }
+        }
+
+        <span class="cov0" title="0">o := Options{
+                DiskProvisioning:   string(types.OvfCreateImportSpecParamsDiskProvisioningTypeFlat),
+                IPAllocationPolicy: string(types.VAppIPAssignmentInfoIpAllocationPolicyDhcpPolicy),
+                IPProtocol:         string(types.VAppIPAssignmentInfoProtocolsIPv4),
+                MarkAsTemplate:     false,
+                PowerOn:            false,
+                WaitForIP:          false,
+                InjectOvfEnv:       false,
+                PropertyMapping:    SpecMap(e, hidden, verbose),
+        }
+
+        if deploymentOptions != nil </span><span class="cov0" title="0">{
+                o.Deployment = deploymentOptions[0]
+        }</span>
+
+        <span class="cov0" title="0">if e.VirtualSystem != nil &amp;&amp; e.VirtualSystem.Annotation != nil </span><span class="cov0" title="0">{
+                o.Annotation = e.VirtualSystem.Annotation.Annotation
+        }</span>
+
+        <span class="cov0" title="0">if e.Network != nil </span><span class="cov0" title="0">{
+                for _, net := range e.Network.Networks </span><span class="cov0" title="0">{
+                        o.NetworkMapping = append(o.NetworkMapping, Network{net.Name, ""})
+                }</span>
+        }
+
+        <span class="cov0" title="0">if verbose </span><span class="cov0" title="0">{
+                if deploymentOptions != nil </span><span class="cov0" title="0">{
+                        o.AllDeploymentOptions = deploymentOptions
+                }</span>
+                <span class="cov0" title="0">o.AllDiskProvisioningOptions = allDiskProvisioningOptions
+                o.AllIPAllocationPolicyOptions = allIPAllocationPolicyOptions
+                o.AllIPProtocolOptions = allIPProtocolOptions</span>
+        }
+
+        <span class="cov0" title="0">return &amp;o, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file9" style="display: none">// © Broadcom. All Rights Reserved.
+// The term "Broadcom" refers to Broadcom Inc. and/or its subsidiaries.
+// SPDX-License-Identifier: Apache-2.0
+
+package ovf
+
+import (
+        "context"
+
+        "github.com/vmware/govmomi/vim25"
+        "github.com/vmware/govmomi/vim25/methods"
+        "github.com/vmware/govmomi/vim25/mo"
+        "github.com/vmware/govmomi/vim25/types"
+)
+
+type Manager struct {
+        types.ManagedObjectReference
+
+        c *vim25.Client
+}
+
+func NewManager(c *vim25.Client) *Manager <span class="cov0" title="0">{
+        return &amp;Manager{*c.ServiceContent.OvfManager, c}
+}</span>
+
+// CreateDescriptor wraps methods.CreateDescriptor
+func (m *Manager) CreateDescriptor(ctx context.Context, obj mo.Reference, cdp types.OvfCreateDescriptorParams) (*types.OvfCreateDescriptorResult, error) <span class="cov0" title="0">{
+        req := types.CreateDescriptor{
+                This: m.Reference(),
+                Obj:  obj.Reference(),
+                Cdp:  cdp,
+        }
+
+        res, err := methods.CreateDescriptor(ctx, m.c, &amp;req)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">return &amp;res.Returnval, nil</span>
+}
+
+// CreateImportSpec wraps methods.CreateImportSpec
+func (m *Manager) CreateImportSpec(ctx context.Context, ovfDescriptor string, resourcePool mo.Reference, datastore mo.Reference, cisp types.BaseOvfCreateImportSpecParams) (*types.OvfCreateImportSpecResult, error) <span class="cov0" title="0">{
+        req := types.CreateImportSpec{
+                This:          m.Reference(),
+                OvfDescriptor: ovfDescriptor,
+                ResourcePool:  resourcePool.Reference(),
+                Datastore:     datastore.Reference(),
+                Cisp:          cisp,
+        }
+
+        res, err := methods.CreateImportSpec(ctx, m.c, &amp;req)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">return &amp;res.Returnval, nil</span>
+}
+
+// ParseDescriptor wraps methods.ParseDescriptor
+func (m *Manager) ParseDescriptor(ctx context.Context, ovfDescriptor string, pdp types.OvfParseDescriptorParams) (*types.OvfParseDescriptorResult, error) <span class="cov0" title="0">{
+        req := types.ParseDescriptor{
+                This:          m.Reference(),
+                OvfDescriptor: ovfDescriptor,
+                Pdp:           pdp,
+        }
+
+        res, err := methods.ParseDescriptor(ctx, m.c, &amp;req)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">return &amp;res.Returnval, nil</span>
+}
+
+// ValidateHost wraps methods.ValidateHost
+func (m *Manager) ValidateHost(ctx context.Context, ovfDescriptor string, host mo.Reference, vhp types.OvfValidateHostParams) (*types.OvfValidateHostResult, error) <span class="cov0" title="0">{
+        req := types.ValidateHost{
+                This:          m.Reference(),
+                OvfDescriptor: ovfDescriptor,
+                Host:          host.Reference(),
+                Vhp:           vhp,
+        }
+
+        res, err := methods.ValidateHost(ctx, m.c, &amp;req)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">return &amp;res.Returnval, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file10" style="display: none">// © Broadcom. All Rights Reserved.
+// The term "Broadcom" refers to Broadcom Inc. and/or its subsidiaries.
+// SPDX-License-Identifier: Apache-2.0
+
+package ovf
+
+import (
+        "io"
+
+        "github.com/vmware/govmomi/vim25/xml"
+)
+
+func Unmarshal(r io.Reader) (*Envelope, error) <span class="cov8" title="1">{
+        var e Envelope
+
+        dec := xml.NewDecoder(r)
+        err := dec.Decode(&amp;e)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov8" title="1">return &amp;e, nil</span>
+}
+
+// Write satisfies the flags.OutputWriter interface.
+func (e *Envelope) Write(w io.Writer) error <span class="cov0" title="0">{
+        return xml.NewEncoder(w).Encode(e)
+}</span>
+</pre>
+		
+		<pre class="file" id="file11" style="display: none">// © Broadcom. All Rights Reserved.
+// The term "Broadcom" refers to Broadcom Inc. and/or its subsidiaries.
+// SPDX-License-Identifier: Apache-2.0
+
+package ovf
+
+import (
+        "math"
+        "regexp"
+        "strconv"
+        "strings"
+)
+
+// These are used to validate the overall structure of the string being parsed and to differentiate tokens as we are
+// processing them
+var (
+        blankRegexp         = regexp.MustCompile(`[[:blank:]]`)
+        validIntegerRegexp  = regexp.MustCompile(`^([1-9]\d*)$`)
+        validExponentRegexp = regexp.MustCompile(`^([1-9]\d*\^[1-9]\d*)$`)
+        validByteUnitRegexp = regexp.MustCompile(`((^|kilo|kibi|mega|mebi|giga|gibi)byte(s?)$)`)
+        validCapacityRegexp = regexp.MustCompile(`^[[:blank:]]*((([1-9]\d*\^[1-9]\d*)|([1-9]\d*))($|[[:blank:]]*\*[[:blank:]]*))*(([a-zA-Z]*(b|B)(y|Y)(t|T)(e|E)(s|S)?)($|([[:blank:]]*\*[[:blank:]]*(([1-9]\d*\^[1-9]\d*)|([1-9]\d*)))*))?$`)
+)
+
+// We only handle kilo, kibi, mega, mebi, giga, gibi prefixes due to size constraints of int64/uint64, but more
+// importantly because prefixes larger than giga &amp; gibi don't make sense for our use-case
+var prefixMultipliers = map[string]int64{
+        "byte":     1,                      // byte
+        "kilobyte": 1 * 1000,               // byte * 1000
+        "kibibyte": 1 * 1024,               // byte * 1024
+        "megabyte": 1 * 1000 * 1000,        // byte * 1000 * 1000 = kilobyte * 1000
+        "mebibyte": 1 * 1024 * 1024,        // byte * 1024 * 1024 = kibibyte * 1024
+        "gigabyte": 1 * 1000 * 1000 * 1000, // byte * 1000 * 1000 * 1000 = kilobyte * 1000 * 1000 = megabyte * 1000
+        "gibibyte": 1 * 1024 * 1024 * 1024, // byte * 1024 * 1024 * 1024 = kibibyte * 1024 * 1024 = mebibyte * 1024
+}
+
+// ParseCapacityAllocationUnits validates the string s is a valid programmatic unit with respect to the base unit 'byte'
+// and parses the string to return the number of bytes s represents
+func ParseCapacityAllocationUnits(s string) int64 <span class="cov8" title="1">{
+        // Any strings which don't match against the regular expression are deemed invalid and zero is returned as the result
+        if !validCapacityString(s) </span><span class="cov8" title="1">{
+                return 0
+        }</span>
+        <span class="cov8" title="1">var capacityBytes int64 = 1
+        // Remove any whitespace in s and lowercase any alphabetic characters. Removal of whitespace is done after
+        // validating against the regular expression because whitespace is valid for the most part, but is not valid
+        // for exponential terms, e.g 2 ^ 10
+        s = strings.ToLower(blankRegexp.ReplaceAllString(s, ""))
+        // Split s on multiplication operator (*) so that we can just calculate integer multipliers. Each token will
+        // then be either an integer, an exponential term to be converted to an integer, or a unit term to be converted
+        // to an integer
+        tokens := strings.Split(s, "*")
+
+        // Loop through all tokens and convert any to integers if necessary and use to compute a running product
+        for _, token := range tokens </span><span class="cov8" title="1">{
+                switch </span>{
+                // "" should be treated identically to "byte". capacityBytes is already set to 1 so there is nothing to do
+                case len(token) == 0:<span class="cov8" title="1">
+                        continue</span>
+                case validByteUnitString(token):<span class="cov8" title="1">
+                        capacityBytes = capacityBytes * prefixMultipliers[strings.TrimSuffix(token, "s")]</span>
+                case validExponentString(token):<span class="cov8" title="1">
+                        p := strings.Split(token, "^")
+                        b, _ := strconv.ParseInt(p[0], 10, 64)
+                        e, _ := strconv.ParseInt(p[1], 10, 64)
+                        capacityBytes = capacityBytes * int64(math.Pow(float64(b), float64(e)))</span>
+                case validIntegerString(token):<span class="cov8" title="1">
+                        n, _ := strconv.ParseInt(token, 10, 64)
+                        capacityBytes = capacityBytes * n</span>
+                default:<span class="cov0" title="0">
+                        // This should be unreachable. validCapacityString should have filtered out anything that cannot be
+                        // matched by the non-default cases
+                        capacityBytes = 0</span>
+                }
+        }
+        <span class="cov8" title="1">return capacityBytes</span>
+}
+
+// validIntegerString matches the string s against the regular expression `^([1-9]\d*)$`; i.e. s should be of the form:
+// any non-zero digit ([1-9]), followed by zero or more digits (\d*)
+func validIntegerString(s string) bool <span class="cov8" title="1">{
+        return validIntegerRegexp.MatchString(s)
+}</span>
+
+// validExponentString matches the string s against the regular expression `^([1-9]\d*\^[1-9]\d*)$`; i.e. s should be of
+// the form: any non-zero digit ([1-9]), followed by a caret (^) followed by any non-zero digit ([1-9]), followed by zero
+// or more digits (\d*)
+func validExponentString(s string) bool <span class="cov8" title="1">{
+        return validExponentRegexp.MatchString(s)
+}</span>
+
+// validByteUnitString matches the string s against a regular expression which only allows a unit of byte
+// (optionally plural) with a valid decimal or binary prefix. See prefixMultipliers
+func validByteUnitString(s string) bool <span class="cov8" title="1">{
+        return validByteUnitRegexp.MatchString(s)
+}</span>
+
+// validCapacityString matches the string s against the regular expression validCapacityRegexp and verifies that s is a
+// valid programmatic unit with respect to the base unit 'byte'.
+//
+// Per the OVF schema defined in DSP8023: "If not specified default value is bytes. Value shall match a recognized value
+// for the UNITS qualifier in DSP0004"
+//
+// DSP004 defines a programmatic unit as:
+//
+// programmatic-unit = [ sign ] *S unit-element *( *S unit-operator *S unit-element )
+// sign = HYPHEN
+// unit-element = number / [ prefix ] base-unit [ CARET exponent ]
+// unit-operator = "*" / "/"
+// number = floatingpoint-number / exponent-number
+//
+// ; An exponent shall be interpreted as a floating point number
+// ; with the specified decimal base and exponent and a mantissa of 1
+// exponent-number = base CARET exponent
+// base = integer-number
+// exponent = [ sign ] integer-number
+//
+// ; An integer shall be interpreted as a decimal integer number
+// integer-number = NON-ZERO-DIGIT *( DIGIT )
+//
+// ; A float shall be interpreted as a decimal floating point number
+// floatingpoint-number = 1*( DIGIT ) [ "." ] *( DIGIT )
+//
+// ; A prefix for a base unit (e.g. "kilo"). The numeric equivalents of
+// ; these prefixes shall be interpreted as multiplication factors for the
+// ; directly succeeding base unit. In other words, if a prefixed base
+// ; unit is in the denominator of the overall programmatic unit, the
+// ; numeric equivalent of that prefix is also in the denominator
+// prefix = decimal-prefix / binary-prefix
+//
+// ; SI decimal prefixes as defined in ISO 1000
+// decimal-prefix =
+//
+//          "deca" ; 10^1
+//        / "hecto" ; 10^2
+//        / "kilo" ; 10^3
+//        / "mega" ; 10^6
+//        / "giga" ; 10^9
+//        / "tera" ; 10^12
+//        / "peta" ; 10^15
+//        / "exa" ; 10^18
+//        / "zetta" ; 10^21
+//        / "yotta" ; 10^24
+//        / "deci" ; 10^-1
+//        / "centi" ; 10^-2
+//        / "milli" ; 10^-3
+//        / "micro" ; 10^-6
+//        / "nano" ; 10^-9
+//        / "pico" ; 10^-12
+//        / "femto" ; 10^-15
+//        / "atto" ; 10^-18
+//        / "zepto" ; 10^-21
+//        / "yocto" ; 10^-24
+//
+// ; IEC binary prefixes as defined in IEC 80000-13
+// binary-prefix =
+//
+//          "kibi" ; 2^10
+//        / "mebi" ´ ; 2^20
+//        / "gibi" ; 2^30
+//        / "tebi" ; 2^40
+//        / "pebi" ; 2^50
+//        / "exbi" ; 2^60
+//        / "zebi" ; 2^70
+//        / "yobi" ; 2^80
+//
+// ; The name of a base unit
+// base-unit = standard-unit / extension-unit
+//
+// ; The name of a standard base unit
+// standard-unit = UNIT-IDENTIFIER
+//
+// ; The name of an extension base unit. If UNIT-IDENTIFIER begins with a
+// ; prefix (see prefix ABNF rule), the meaning of that prefix shall not be
+// ; changed by the extension base unit (examples of this for standard base
+// ; units are "decibel" or "kilogram")
+// ; extension-unit = org-id COLON UNIT-IDENTIFIER
+//
+// ; org-id shall include a copyrighted, trademarked, or otherwise unique
+// ; name that is owned by the business entity that is defining the
+// ; extension unit, or that is a registered ID assigned to the business
+// ; entity by a recognized global authority. org-id shall not begin with
+// ; a prefix (see prefix ABNF rule)
+// org-id = UNIT-IDENTIFIER
+// UNIT-IDENTIFIER = FIRST-UNIT-CHAR [ *( MID-UNIT-CHAR )
+// LAST-UNIT-CHAR ]
+// FIRST-UNIT-CHAR = UPPERALPHA / LOWERALPHA / UNDERSCORE
+// LAST-UNIT-CHAR = FIRST-UNIT-CHAR / DIGIT / PARENS
+// MID-UNIT-CHAR = LAST-UNIT-CHAR / HYPHEN / S
+//
+// DIGIT = ZERO / NON-ZERO-DIGIT
+// ZERO = "0"
+// NON-ZERO-DIGIT = "1"-"9"
+// HYPHEN = U+002D ; "-"
+// CARET = U+005E ; "^"
+// COLON = U+003A ; ":"
+// UPPERALPHA = U+0041-005A ; "A" ... "Z"
+// LOWERALPHA = U+0061-007A ; "a" ... "z"
+// UNDERSCORE = U+005F ; "_"
+// PARENS = U+0028 / U+0029 ; "(", ")"
+// S = U+0020 ; " "
+//
+// This definition is further restricted as such a broad definition by the above grammar does not make sense in the
+// context of virtual disk capacity.
+//
+// We do not allow for negative values, division operations, floating-point numbers, negative exponents, nor the use of
+// multiple units. Furthermore, we limit the allowed decimal and binary prefixes. This gives us:
+//
+// programmatic-unit =
+//
+//           number
+//                / [prefix] base-unit
+//                / number *( *S unit-operator *S number) *S unit-operator *S [prefix] base-unit
+//                / [prefix] base-unit *( *S unit-operator *S number)
+//                / number *( *S unit-operator *S number) *S unit-operator *S [prefix] base-unit *( *S unit-operator *S number)
+//
+// unit-operator = "*"
+// number = integer-number / exponent-number
+// exponent-number = base CARET exponent
+// base = integer-number
+// exponent = integer-number
+// integer-number = NON-ZERO-DIGIT *( DIGIT )
+// prefix = decimal-prefix / binary-prefix
+//
+// decimal-prefix =
+//
+//          "kilo" ; 10^3
+//        / "mega" ; 10^6
+//        / "giga" ; 10^9
+//
+// binary-prefix =
+//
+//          "kibi" ; 2^10
+//        / "mebi" ; 2^20
+//        / "gibi" ; 2^30
+//
+// This function and the regular expression validCapacityRegexp are used to verify that the string we are parsing follows
+// our above restricted grammar
+func validCapacityString(s string) bool <span class="cov8" title="1">{
+        // Integer followed by a trailing '*' is not handled by the regular expression and so is explicitly checked
+        return validCapacityRegexp.MatchString(s) &amp;&amp; !strings.HasSuffix(s, "*")
+}</span>
+</pre>
+		
+		</div>
+	</body>
+	<script>
+	(function() {
+		var files = document.getElementById('files');
+		var visible;
+		files.addEventListener('change', onChange, false);
+		function select(part) {
+			if (visible)
+				visible.style.display = 'none';
+			visible = document.getElementById(part);
+			if (!visible)
+				return;
+			files.value = part;
+			visible.style.display = 'block';
+			location.hash = part;
+		}
+		function onChange() {
+			select(files.value);
+			window.scrollTo(0, 0);
+		}
+		if (location.hash != "") {
+			select(location.hash.substr(1));
+		}
+		if (!visible) {
+			select("file0");
+		}
+	})();
+	</script>
+</html>

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- DMTF DSP0243 9.5.1, 9.8: Property with Value elements for alternative defaults per configuration -->
+<Envelope xmlns="http://schemas.dmtf.org/ovf/envelope/1"
+          xmlns:ovf="http://schemas.dmtf.org/ovf/envelope/1"
+          xmlns:rasd="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ResourceAllocationSettingData"
+          xmlns:vssd="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_VirtualSystemSettingData"
+          xmlns:sasd="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_StorageAllocationSettingData">
+  <References/>
+  <DiskSection>
+    <Info>Virtual disks</Info>
+  </DiskSection>
+  <NetworkSection>
+    <Info>Logical networks</Info>
+    <Network ovf:name="VM Network"/>
+  </NetworkSection>
+  <DeploymentOptionSection>
+    <Info>Deployment options</Info>
+    <Configuration ovf:id="minimal">
+      <Label>Minimal</Label>
+      <Description>Minimal deployment</Description>
+    </Configuration>
+    <Configuration ovf:id="standard" ovf:default="true">
+      <Label>Standard</Label>
+      <Description>Standard deployment</Description>
+    </Configuration>
+  </DeploymentOptionSection>
+  <VirtualSystem ovf:id="prop-config-vm">
+    <Info>VM with property values per configuration</Info>
+    <Name>prop-config-vm</Name>
+    <OperatingSystemSection ovf:id="101">
+      <Info>Guest OS</Info>
+      <Description>Other 64-bit Linux</Description>
+    </OperatingSystemSection>
+    <VirtualHardwareSection>
+      <Info>Virtual hardware</Info>
+      <System>
+        <vssd:ElementName>Virtual Hardware Family</vssd:ElementName>
+        <vssd:InstanceID>0</vssd:InstanceID>
+        <vssd:VirtualSystemType>vmx-13</vssd:VirtualSystemType>
+      </System>
+      <Item>
+        <rasd:AllocationUnits>hertz * 10^6</rasd:AllocationUnits>
+        <rasd:ElementName>1 virtual CPU</rasd:ElementName>
+        <rasd:InstanceID>1</rasd:InstanceID>
+        <rasd:ResourceType>3</rasd:ResourceType>
+        <rasd:VirtualQuantity>1</rasd:VirtualQuantity>
+      </Item>
+      <Item>
+        <rasd:AllocationUnits>byte * 2^20</rasd:AllocationUnits>
+        <rasd:ElementName>512MB memory</rasd:ElementName>
+        <rasd:InstanceID>2</rasd:InstanceID>
+        <rasd:ResourceType>4</rasd:ResourceType>
+        <rasd:VirtualQuantity>512</rasd:VirtualQuantity>
+      </Item>
+      <Item>
+        <rasd:Address>0</rasd:Address>
+        <rasd:Description>IDE Controller</rasd:Description>
+        <rasd:ElementName>IDE 0</rasd:ElementName>
+        <rasd:InstanceID>3</rasd:InstanceID>
+        <rasd:ResourceType>5</rasd:ResourceType>
+      </Item>
+      <Item>
+        <rasd:AddressOnParent>0</rasd:AddressOnParent>
+        <rasd:AutomaticAllocation>true</rasd:AutomaticAllocation>
+        <rasd:Connection>VM Network</rasd:Connection>
+        <rasd:ElementName>Network adapter 1</rasd:ElementName>
+        <rasd:InstanceID>4</rasd:InstanceID>
+        <rasd:ResourceSubType>E1000</rasd:ResourceSubType>
+        <rasd:ResourceType>10</rasd:ResourceType>
+      </Item>
+    </VirtualHardwareSection>
+    <ProductSection>
+      <Info>Product with property Value per configuration</Info>
+      <Product>Test App</Product>
+      <Vendor>Test</Vendor>
+      <Version>1.0</Version>
+      <Property ovf:key="log_level" ovf:type="string" ovf:userConfigurable="true" ovf:value="info">
+        <Label>Log level</Label>
+        <Description>Application log level</Description>
+        <Value ovf:value="debug" ovf:configuration="minimal"/>
+        <Value ovf:value="warn" ovf:configuration="standard"/>
+      </Property>
+      <Property ovf:key="heap_mb" ovf:type="uint32" ovf:userConfigurable="false" ovf:value="256">
+        <Label>Heap size (MB)</Label>
+        <Description>JVM heap size in MB</Description>
+        <Value ovf:value="128" ovf:configuration="minimal"/>
+        <Value ovf:value="512" ovf:configuration="standard"/>
+      </Property>
+    </ProductSection>
+  </VirtualSystem>
+</Envelope>

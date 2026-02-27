@@ -115,6 +115,29 @@ type CIMResourceAllocationSettingData struct {
 }
 
 /*
+Source: http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_EthernetPortAllocationSettingData.xsd
+CIM_EthernetPortAllocationSettingData describes Ethernet port (NIC) allocation.
+*/
+type CIMEthernetPortAllocationSettingData struct {
+	ElementName string `xml:"ElementName" json:"elementName,omitempty"`
+	InstanceID  string `xml:"InstanceID" json:"instanceID,omitempty"`
+
+	ResourceType      *CIMResourceType `xml:"ResourceType" json:"resourceType,omitempty"`
+	OtherResourceType *string          `xml:"OtherResourceType" json:"otherResourceType,omitempty"`
+	ResourceSubType   *string          `xml:"ResourceSubType" json:"resourceSubType,omitempty"`
+
+	Address               *string  `xml:"Address" json:"address,omitempty"`
+	AddressOnParent       *string  `xml:"AddressOnParent" json:"addressOnParent,omitempty"`
+	AllocationUnits       *string  `xml:"AllocationUnits" json:"allocationUnits,omitempty"`
+	AutomaticAllocation   *bool    `xml:"AutomaticAllocation" json:"automaticAllocation,omitempty"`
+	AutomaticDeallocation *bool    `xml:"AutomaticDeallocation" json:"automaticDeallocation,omitempty"`
+	Connection            []string `xml:"Connection" json:"connection,omitempty"`
+	Description           *string  `xml:"Description" json:"description,omitempty"`
+	VirtualQuantity       *uint    `xml:"VirtualQuantity" json:"virtualQuantity,omitempty"`
+	VirtualQuantityUnits  *string  `xml:"VirtualQuantityUnits" json:"virtualQuantityUnits,omitempty"`
+}
+
+/*
 Source: http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2.24.0/CIM_StorageAllocationSettingData.xsd
 */
 type CIMStorageAllocationSettingData struct {

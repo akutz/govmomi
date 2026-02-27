@@ -182,11 +182,23 @@ type VirtualHardwareSection struct {
 	ID        *string `xml:"id,attr" json:"id"`
 	Transport *string `xml:"transport,attr" json:"transport,omitempty"`
 
-	System      *VirtualSystemSettingData       `xml:"System" json:"system,omitempty"`
-	Item        []ResourceAllocationSettingData `xml:"Item" json:"item,omitempty"`
-	StorageItem []StorageAllocationSettingData  `xml:"StorageItem" json:"storageItem,omitempty"`
-	Config      []Config                        `xml:"Config" json:"config,omitempty"`
-	ExtraConfig []Config                        `xml:"ExtraConfig" json:"extraConfig,omitempty"`
+	System          *VirtualSystemSettingData        `xml:"System" json:"system,omitempty"`
+	Item            []ResourceAllocationSettingData  `xml:"Item" json:"item,omitempty"`
+	EthernetPortItem []EthernetPortAllocationSettingData `xml:"EthernetPortItem" json:"ethernetPortItem,omitempty"`
+	StorageItem     []StorageAllocationSettingData   `xml:"StorageItem" json:"storageItem,omitempty"`
+	Config          []Config                         `xml:"Config" json:"config,omitempty"`
+	ExtraConfig     []Config                         `xml:"ExtraConfig" json:"extraConfig,omitempty"`
+}
+
+// EthernetPortAllocationSettingData is the OVF envelope wrapper for
+// CIM_EthernetPortAllocationSettingData (DSP0243 §8.1).
+type EthernetPortAllocationSettingData struct {
+	CIMEthernetPortAllocationSettingData
+
+	Required      *bool    `xml:"required,attr" json:"required,omitempty"`
+	Configuration *string  `xml:"configuration,attr" json:"configuration,omitempty"`
+	Bound         *string  `xml:"bound,attr" json:"bound,omitempty"`
+	Config        []Config `xml:"Config" json:"config,omitempty"`
 }
 
 type VirtualSystemSettingData struct {

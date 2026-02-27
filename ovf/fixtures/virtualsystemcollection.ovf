@@ -8,7 +8,7 @@ Example 3 from https://www.dmtf.org/sites/default/files/standards/documents/DSP0
     xmlns="http://schemas.dmtf.org/ovf/envelope/2"
     xmlns:vssd="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_VirtualSystemSettingData"
     xmlns:rasd="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ResourceAllocationSettingData"
-    xmlns:epasd="http://schemas.dmtf.org/wbem/wscim/1/cim2608 schema/2/CIM_EthernetPortAllocationSettingData"
+    xmlns:epasd="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_EthernetPortAllocationSettingData"
     xmlns:sasd="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_StorageAllocationSettingData">
     <!-- References to all external files -->
     <References>
